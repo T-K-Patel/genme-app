@@ -23,6 +23,10 @@ final class ProfileStateDataRefreshed extends ProfileState {
   const ProfileStateDataRefreshed({required this.userProfile});
 }
 
+final class ProfileStateAuthError extends ProfileState{
+  const ProfileStateAuthError();
+}
+
 final class ProfileStateError extends ProfileState {
   final Exception exception;
   const ProfileStateError({required this.exception});

@@ -1,26 +1,50 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 
 class CartItem extends StatefulWidget {
   final String name;
   final String quantity;
   final String id;
+  final Function(int) onQuantityChanged; // Callback to update quantity
 
   const CartItem({
-    super.key,
+    Key? key,
     required this.name,
     required this.quantity,
     required this.id,
-  });
+    required this.onQuantityChanged, // Add callback parameter
+  }) : super(key: key);
 
   @override
   State<CartItem> createState() => _CartItemState();
 }
 
 class _CartItemState extends State<CartItem> {
+  int quantity = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    quantity = int.parse(widget.quantity);
+  }
+
+  void _updateQuantity(int delta) {
+    setState(() {
+      quantity += delta;
+      if (quantity < 0) quantity = 0;
+
+      // Call the parent callback to update SharedPreferences
+      widget.onQuantityChanged(quantity);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final double deviceWidth = MediaQuery.of(context).size.width;
+    // final double deviceHeight = MediaQuery.of(context).size.height;
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      margin: EdgeInsets.symmetric(
+          horizontal: deviceWidth * 0.04, vertical: deviceWidth * 0.02),
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -34,35 +58,33 @@ class _CartItemState extends State<CartItem> {
       ),
       child: Row(
         children: [
-          // Use Expanded to allow the text to wrap
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  widget.name, // Use the name passed to the widget
-                  style: const TextStyle(
-                    fontSize: 18,
+                  widget.name,
+                  style: TextStyle(
+                    fontSize: deviceWidth * 0.044,
                     fontWeight: FontWeight.bold,
                   ),
-                  softWrap: true, // Allow text to wrap
+                  softWrap: true,
                 ),
               ],
             ),
           ),
-          // Keep the buttons right-aligned
           Row(
             children: [
               IconButton(
                 onPressed: () {
-                  // Handle reduce quantity
+                  _updateQuantity(-1);
                 },
                 icon: const Icon(Icons.remove),
                 disabledColor: Colors.grey,
                 tooltip: 'Remove',
               ),
               Text(
-                widget.quantity, // Use the quantity passed to the widget
+                quantity.toString(),
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -70,7 +92,7 @@ class _CartItemState extends State<CartItem> {
               ),
               IconButton(
                 onPressed: () {
-                  // Handle increase quantity
+                  _updateQuantity(1);
                 },
                 icon: const Icon(Icons.add),
                 color: Colors.green,

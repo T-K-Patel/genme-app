@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:genme_app/routes/router.dart';
+// import 'package:genme_app/services/notification_service.dart';
 import 'package:genme_app/state/auth/auth_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -11,189 +12,469 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
     return SafeArea(
       child: Scaffold(
-        body: SingleChildScrollView( // Added to make the screen scrollable
-          child: Column(
-            children: [
-              Container(
-                decoration: const BoxDecoration(
-                  color: Colors.black,
-                  borderRadius: BorderRadius.vertical(
-                    bottom: Radius.elliptical(200, 50),
-                  ),
-                ),
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 40, horizontal: 20),
-                  child: Column(
-                    children: [
-                      Center(
-                        child: Text(
-                          'Sign In',
-                          style: TextStyle(
-                            fontSize: 36,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.blue,
+        body: Stack(
+          children: [
+            // BlocListener<AuthBloc,AuthState>(listener: (context,state)=>{
+            //   if(state is AuthStateUninitialized){
+            //     GoRouter.of(context).go("/splash")
+            //   }
+            // }),
+            // SingleChildScrollView should come before the Positioned element
+            SingleChildScrollView(
+              child: Column(
+                children: [
+                  SizedBox(
+                      height: screenHeight *
+                          0.30), // Space to move form below the circle
+                  Padding(
+                    padding: EdgeInsets.all(screenWidth * 0.05),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // Email Address Label
+                        const Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Username',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                      ),
-                      SizedBox(height: 20),
-                      Center(
-                        child: Text(
-                          'Log in to access your personalized Medinest experience',
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.white,
+                        SizedBox(height: screenHeight * 0.015),
+                        // Email Address Input Field
+                        TextField(
+                          controller: usernameController,
+                          decoration: InputDecoration(
+                            prefixIcon: const Icon(Icons.email_outlined),
+                            hintText: "Enter your username...",
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: const BorderSide(
+                                color: Colors.blue,
+                                width: 2,
+                              ),
+                            ),
+                            filled: true,
+                            contentPadding: EdgeInsets.all(screenWidth * 0.04),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: BorderSide.none,
+                            ),
+                            fillColor: const Color.fromARGB(255, 240, 240, 240),
                           ),
-                          textAlign: TextAlign.center,
+                          keyboardType: TextInputType.emailAddress,
+                        ),
+                        SizedBox(height: screenHeight * 0.035),
+
+                        // Password Label
+                        const Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Password',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: screenHeight * 0.015),
+                        // Password Input Field
+                        TextField(
+                          controller: passwordController,
+                          decoration: InputDecoration(
+                            prefixIcon: const Icon(Icons.lock_outline),
+                            hintText: "Enter your password...",
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: const BorderSide(
+                                color: Colors.blue,
+                                width: 2,
+                              ),
+                            ),
+                            filled: true,
+                            contentPadding: EdgeInsets.all(screenWidth * 0.04),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: BorderSide.none,
+                            ),
+                            fillColor: const Color.fromARGB(255, 240, 240, 240),
+                          ),
+                          obscureText: true,
+                        ),
+                        SizedBox(height: screenHeight * 0.065),
+
+                        // Sign In Button
+                        SizedBox(
+                          width: double.infinity,
+                          height: screenHeight * 0.08,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              backgroundColor:
+                                  const Color.fromARGB(255, 18, 21, 114),
+                            ),
+                            onPressed: () {
+                              // context
+                              //     .read<AuthBloc>()
+                              //     .add(const AuthEventCheck());
+                              context.read<AuthBloc>().add(
+                                    AuthEventLogin(
+                                        username:
+                                            usernameController.text.toString(),
+                                        password:
+                                            passwordController.text.toString()),
+                                  );
+                              // NotificationService.showSnackBar(
+                              //     "messagelllooooggg");
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                BlocBuilder<AuthBloc, AuthState>(
+                                    builder: (context, state) {
+                                  if (state is AuthStateLoading) {
+                                    return const Center(
+                                        child: CircularProgressIndicator());
+                                  } else if (state is AuthStateError) {
+                                    // NotificationService.showSnackBar(
+                                    //   state.exception.toString(),
+                                    //   duration: const Duration(seconds: 2),
+                                    //   backgroundColor: Colors.red,
+                                    //   textStyle:
+                                    //       const TextStyle(color: Colors.white),
+                                    // );
+                                    // emit(const AuthStateInitial());
+
+                                    return const Text(
+                                      'Sign In',
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white),
+                                    );
+                                  }
+                                  return const Text(
+                                    'Sign In',
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white),
+                                  );
+                                }),
+                                const SizedBox(width: 8),
+                                const Icon(Icons.arrow_forward,
+                                    color: Colors.white),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: screenHeight * 0.025),
+                      ],
+                    ),
+                  ),
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Developed by ",
+                        style: TextStyle(
+                          fontSize: 16,
+                        ),
+                      ),
+                      Text(
+                        "GenMe",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        " with 💚",
+                        style: TextStyle(
+                          fontSize: 16,
                         ),
                       ),
                     ],
                   ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // Email Address Label
-                    const Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Email Address',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    // Email Address Input Field
-                    TextField(
-                      decoration: InputDecoration(
-                        prefixIcon: const Icon(Icons.email_outlined),
-                        hintText: "Enter your email address...",
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: const BorderSide(
-                            color: Colors.blue,
-                            width: 2,
-                          ),
-                        ),
-                        filled: true,
-                        contentPadding: const EdgeInsets.all(18),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: BorderSide.none,
-                        ),
-                        fillColor: const Color.fromARGB(255, 240, 240, 240),
-                      ),
-                      keyboardType: TextInputType.emailAddress,
-                    ),
-                    const SizedBox(height: 28),
-
-                    // Password Label
-                    const Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Password',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    // Password Input Field
-                    TextField(
-                      decoration: InputDecoration(
-                        prefixIcon: const Icon(Icons.lock_outline),
-                        hintText: "Enter your password...",
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: const BorderSide(
-                            color: Colors.blue,
-                            width: 2,
-                          ),
-                        ),
-                        filled: true,
-                        contentPadding: const EdgeInsets.all(18),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: BorderSide.none,
-                        ),
-                        fillColor: const Color.fromARGB(255, 240, 240, 240),
-                      ),
-                      obscureText: true,
-                    ),
-                    const SizedBox(height: 50),
-
-                    // Sign In Button
-                    SizedBox(
-                      width: double.infinity,
-                      height: 65,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          backgroundColor: const Color.fromARGB(255, 18, 21, 114),
-                        ),
-                        onPressed: () {
-                          // Handle sign-in logic
-                          context.read<AuthBloc>().add(const AuthEventCheck());
-                        },
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Sign In',
-                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
-                            ),
-                            SizedBox(width: 8),
-                            Icon(Icons.arrow_forward, color: Colors.white),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    // const CircularProgressIndicator()
-                  ],
-                ),
-              ),
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Developed by ",
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                  Text(
-                    "GenMe",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    " with 💚",
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
+                  SizedBox(height: screenHeight * 0.01),
                 ],
               ),
-              const SizedBox(height: 10),
-            ],
-          ),
+            ),
+            // Positioned Circle (ClipOval) should come last
+            Positioned(
+              left: -screenWidth * 0.62,
+              top: -screenHeight *
+                  0.82, // Adjust this value to control how much the circle goes off-screen
+              child: ClipOval(
+                child: Container(
+                  color: Colors.black,
+                  width: screenWidth *
+                      2.25, // Large width to ensure the circle overflows horizontally
+                  height: 900, // Adjust height to control the overall shape
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: screenHeight * 0.05,
+                      horizontal: screenWidth * 0.55,
+                    ), // Adjust padding to place content lower
+                    child: const Column(
+                      mainAxisAlignment:
+                          MainAxisAlignment.end, // Align content at the bottom
+                      children: [
+                        Center(
+                          child: Text(
+                            'Sign In',
+                            style: TextStyle(
+                              fontSize: 36,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blue,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        Center(
+                          child: Text(
+                            'Log in to access your personalized Medinest experience',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.white,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 }
+
+
+
+
+
+
+
+
+
+// import 'package:flutter/material.dart';
+// import 'package:flutter_bloc/flutter_bloc.dart';
+// import 'package:genme_app/routes/router.dart';
+// import 'package:genme_app/state/auth/auth_bloc.dart';
+
+// class LoginScreen extends StatefulWidget {
+//   const LoginScreen({super.key});
+
+//   @override
+//   State<LoginScreen> createState() => _LoginScreenState();
+// }
+
+// class _LoginScreenState extends State<LoginScreen> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return SafeArea(
+//       child: Scaffold(
+//         body: SingleChildScrollView(
+//           // Added to make the screen scrollable
+//           child: Column(
+//             children: [
+//               Container(
+//                 decoration: const BoxDecoration(
+//                   color: Colors.black,
+//                   borderRadius: BorderRadius.vertical(
+//                     bottom: Radius.elliptical(200, 50),
+//                   ),
+//                 ),
+//                 child: const Padding(
+//                   padding: EdgeInsets.symmetric(vertical: 40, horizontal: 20),
+//                   child: Column(
+//                     children: [
+//                       Center(
+//                         child: Text(
+//                           'Sign In',
+//                           style: TextStyle(
+//                             fontSize: 36,
+//                             fontWeight: FontWeight.bold,
+//                             color: Colors.blue,
+//                           ),
+//                         ),
+//                       ),
+//                       SizedBox(height: 20),
+//                       Center(
+//                         child: Text(
+//                           'Log in to access your personalized Medinest experience',
+//                           style: TextStyle(
+//                             fontSize: 20,
+//                             color: Colors.white,
+//                           ),
+//                           textAlign: TextAlign.center,
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 ),
+//               ),
+//               const SizedBox(height: 20),
+//               Padding(
+//                 padding: const EdgeInsets.all(20),
+//                 child: Column(
+//                   mainAxisAlignment: MainAxisAlignment.center,
+//                   children: [
+//                     // Email Address Label
+//                     const Align(
+//                       alignment: Alignment.centerLeft,
+//                       child: Text(
+//                         'Email Address',
+//                         style: TextStyle(
+//                           fontSize: 16,
+//                           fontWeight: FontWeight.bold,
+//                         ),
+//                       ),
+//                     ),
+//                     const SizedBox(height: 12),
+//                     // Email Address Input Field
+//                     TextField(
+//                       decoration: InputDecoration(
+//                         prefixIcon: const Icon(Icons.email_outlined),
+//                         hintText: "Enter your email address...",
+//                         focusedBorder: OutlineInputBorder(
+//                           borderRadius: BorderRadius.circular(16),
+//                           borderSide: const BorderSide(
+//                             color: Colors.blue,
+//                             width: 2,
+//                           ),
+//                         ),
+//                         filled: true,
+//                         contentPadding: const EdgeInsets.all(18),
+//                         border: OutlineInputBorder(
+//                           borderRadius: BorderRadius.circular(16),
+//                           borderSide: BorderSide.none,
+//                         ),
+//                         fillColor: const Color.fromARGB(255, 240, 240, 240),
+//                       ),
+//                       keyboardType: TextInputType.emailAddress,
+//                     ),
+//                     const SizedBox(height: 28),
+
+//                     // Password Label
+//                     const Align(
+//                       alignment: Alignment.centerLeft,
+//                       child: Text(
+//                         'Password',
+//                         style: TextStyle(
+//                           fontSize: 16,
+//                           fontWeight: FontWeight.bold,
+//                         ),
+//                       ),
+//                     ),
+//                     const SizedBox(height: 12),
+//                     // Password Input Field
+//                     TextField(
+//                       decoration: InputDecoration(
+//                         prefixIcon: const Icon(Icons.lock_outline),
+//                         hintText: "Enter your password...",
+//                         focusedBorder: OutlineInputBorder(
+//                           borderRadius: BorderRadius.circular(16),
+//                           borderSide: const BorderSide(
+//                             color: Colors.blue,
+//                             width: 2,
+//                           ),
+//                         ),
+//                         filled: true,
+//                         contentPadding: const EdgeInsets.all(18),
+//                         border: OutlineInputBorder(
+//                           borderRadius: BorderRadius.circular(16),
+//                           borderSide: BorderSide.none,
+//                         ),
+//                         fillColor: const Color.fromARGB(255, 240, 240, 240),
+//                       ),
+//                       obscureText: true,
+//                     ),
+//                     const SizedBox(height: 50),
+
+//                     // Sign In Button
+//                     SizedBox(
+//                       width: double.infinity,
+//                       height: 65,
+//                       child: ElevatedButton(
+//                         style: ElevatedButton.styleFrom(
+//                           shape: RoundedRectangleBorder(
+//                             borderRadius: BorderRadius.circular(20),
+//                           ),
+//                           backgroundColor:
+//                               const Color.fromARGB(255, 18, 21, 114),
+//                         ),
+//                         onPressed: () {
+//                           // Handle sign-in logic
+//                           context.read<AuthBloc>().add(const AuthEventCheck());
+//                         },
+//                         child: const Row(
+//                           mainAxisAlignment: MainAxisAlignment.center,
+//                           children: [
+//                             Text(
+//                               'Sign In',
+//                               style: TextStyle(
+//                                   fontSize: 20,
+//                                   fontWeight: FontWeight.bold,
+//                                   color: Colors.white),
+//                             ),
+//                             SizedBox(width: 8),
+//                             Icon(Icons.arrow_forward, color: Colors.white),
+//                           ],
+//                         ),
+//                       ),
+//                     ),
+//                     const SizedBox(height: 20),
+//                     // const CircularProgressIndicator()
+//                   ],
+//                 ),
+//               ),
+//               const Row(
+//                 mainAxisAlignment: MainAxisAlignment.center,
+//                 children: [
+//                   Text(
+//                     "Developed by ",
+//                     style: TextStyle(
+//                       fontSize: 16,
+//                     ),
+//                   ),
+//                   Text(
+//                     "GenMe",
+//                     style: TextStyle(
+//                       fontSize: 16,
+//                       fontWeight: FontWeight.bold,
+//                     ),
+//                   ),
+//                   Text(
+//                     " with 💚",
+//                     style: TextStyle(
+//                       fontSize: 16,
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//               const SizedBox(height: 10),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }

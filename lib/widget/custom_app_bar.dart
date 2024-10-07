@@ -7,7 +7,8 @@ import 'package:go_router/go_router.dart';
 class CustomAppBar extends StatefulWidget {
   final bool isHome;
   final String title;
-  const CustomAppBar({super.key,this.title = "Add Items to your cart", this.isHome =false});
+  const CustomAppBar(
+      {super.key, this.title = "Add Items to your cart", this.isHome = false});
 
   @override
   State<CustomAppBar> createState() => CustomAppBarState();
@@ -31,19 +32,25 @@ class CustomAppBarState extends State<CustomAppBar> {
           Row(
             children: [
               GestureDetector(
-                onTap: (){
+                onTap: () {
                   GoRouter.of(context).go('/profile');
                 },
-                child: const CircleAvatar(
-                radius: 20,
-                backgroundColor: Colors.white,
-                backgroundImage: NetworkImage(
-                  "https://imgv3.fotor.com/images/slider-image/A-clear-image-of-a-woman-wearing-red-sharpened-by-Fotors-image-sharpener.jpg",
-                  scale: 1,
-                )
-              ),),
+                child: CircleAvatar(
+                  radius: 20,
+                  backgroundColor: Colors.white,
+                  child: Icon(
+                    Icons.person, // Default human icon in Material Design
+                    size: 30,
+                    color: Colors.grey[700], // Customize icon color
+                  ),
+                  // backgroundImage: NetworkImage(
+                  //   "https://imgv3.fotor.com/images/slider-image/A-clear-image-of-a-woman-wearing-red-sharpened-by-Fotors-image-sharpener.jpg",
+                  //   scale: 1,
+                  // )
+                ),
+              ),
               const Padding(padding: EdgeInsets.only(left: 20)),
-             const  Text(
+              const Text(
                 "genme",
                 style: TextStyle(
                   fontSize: 34,
@@ -60,7 +67,10 @@ class CustomAppBarState extends State<CustomAppBar> {
             children: [
               const Text(
                 "Hello",
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white),
+                style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
               ),
               const Padding(padding: EdgeInsets.only(left: 10)),
               BlocBuilder<AuthBloc, AuthState>(
@@ -70,13 +80,19 @@ class CustomAppBarState extends State<CustomAppBar> {
                 builder: (context, state) {
                   if (state is AuthStateLoggedIn) {
                     return Text(
-                      '${state.user.legal_name} !',
-                      style: const TextStyle(fontSize: 30, fontWeight: FontWeight.normal, color: Colors.white),
+                      '${state.user.legalName} !',
+                      style: const TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.normal,
+                          color: Colors.white),
                     );
                   }
                   return const Text(
                     " User !",
-                    style: TextStyle(fontSize: 30, fontWeight: FontWeight.normal, color: Colors.white),
+                    style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.normal,
+                        color: Colors.white),
                   );
                 },
               ),
@@ -87,15 +103,18 @@ class CustomAppBarState extends State<CustomAppBar> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text(
-               widget.title,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w300, color: Colors.white),
+                widget.title,
+                style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w300,
+                    color: Colors.white),
               ),
             ],
           ),
           if (widget.isHome == true)
             const Padding(padding: EdgeInsets.only(top: 10)),
           //   Search Input field
-          if(widget.isHome==true)
+          if (widget.isHome == true)
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
@@ -103,13 +122,16 @@ class CustomAppBarState extends State<CustomAppBar> {
                 borderRadius: BorderRadius.circular(15),
               ),
               child: TextField(
-                onTap: (){
+                onTap: () {
                   GoRouter.of(context).go('/search');
                 },
                 decoration: const InputDecoration(
                   alignLabelWithHint: true,
                   hintText: 'Search Medicine to Buy',
-                  hintStyle: TextStyle(color: Colors.grey, fontStyle: FontStyle.italic, fontSize: 16),
+                  hintStyle: TextStyle(
+                      color: Colors.grey,
+                      fontStyle: FontStyle.italic,
+                      fontSize: 16),
                   border: InputBorder.none,
                   icon: Icon(
                     Icons.search_sharp,

@@ -3,7 +3,7 @@ import 'package:genme_app/state/auth/auth_bloc.dart';
 
 class RouterState extends ChangeNotifier {
   String? _redir;
-  AuthState authState = const AuthStateInitial();
+  AuthState authState = const AuthStateUninitialized();
 
   String? get redir {
     final temp = _redir;

@@ -19,3 +19,5 @@ class Utility {
     ScaffoldMessenger.of(key.currentContext!).showSnackBar(snackBar);
   }
 }
+
+const baseUrl = "https://genme-app-backend.vercel.app" ;

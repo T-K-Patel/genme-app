@@ -40,20 +40,20 @@ const teamData = [
     "bio": "I am a software engineer with a passion for building products that "
         "make a difference in people's lives."
   },
-  {
-    "name": "John Doe",
-    "role": "Software Engineer",
-    "imageUrl": "https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg",
-    "bio": "I am a software engineer with a passion for building products that "
-        "make a difference in people's lives."
-  },
-  {
-    "name": "Jane Doe",
-    "role": "Software Engineer",
-    "imageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQEZrATmgHOi5ls0YCCQBTkocia_atSw0X-Q&s",
-    "bio": "I am a software engineer with a passion for building products "
-        "that make a difference in people's lives."
-  },
+  // {
+  //   "name": "John Doe",
+  //   "role": "Software Engineer",
+  //   "imageUrl": "https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg",
+  //   "bio": "I am a software engineer with a passion for building products that "
+  //       "make a difference in people's lives."
+  // },
+  // {
+  //   "name": "Jane Doe",
+  //   "role": "Software Engineer",
+  //   "imageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQEZrATmgHOi5ls0YCCQBTkocia_atSw0X-Q&s",
+  //   "bio": "I am a software engineer with a passion for building products "
+  //       "that make a difference in people's lives."
+  // },
 ];
 
 class HomeScreen extends StatelessWidget {
@@ -121,31 +121,45 @@ class InfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: Colors.grey.shade200, width: 2),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Container(
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: const EdgeInsets.all(12),
+          width: constraints.maxWidth > 600 ? 600 : screenWidth * 0.9, // Limiting max width
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(15),
+            border: Border.all(color: Colors.grey.shade200, width: 2),
           ),
-          const Padding(padding: EdgeInsets.only(top: 10)),
-          Text(
-            description,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w300),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: constraints.maxWidth > 600 ? 24 : 18, // Adjust font size based on width
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const Padding(padding: EdgeInsets.only(top: 10)),
+              Text(
+                description,
+                style: TextStyle(
+                  fontSize: constraints.maxWidth > 600 ? 18 : 14,
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
+
 
 
 class MemberCard extends StatelessWidget {
@@ -164,71 +178,72 @@ class MemberCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: Colors.grey.shade200, width: 2),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // Rectangular image
-          ClipRRect(
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Container(
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: const EdgeInsets.all(12),
+          width: constraints.maxWidth > 600 ? 600 : screenWidth * 0.9, // Max width limit
+          decoration: BoxDecoration(
+            color: Colors.white,
             borderRadius: BorderRadius.circular(15),
-            child: Image.network(
-              imageUrl,
-              width: 80,
-              height: 80,
-              fit: BoxFit.cover,
-            ),
+            border: Border.all(color: Colors.grey.shade200, width: 2),
           ),
-          const SizedBox(width: 10), // Space between image and text
-
-          // Expanded widget to allow flexible width for text content
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Name text
-                Text(
-                  name,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(15),
+                child: Image.network(
+                  imageUrl,
+                  width: constraints.maxWidth > 600 ? 100 : 80,
+                  height: constraints.maxWidth > 600 ? 100 : 80,
+                  fit: BoxFit.cover,
                 ),
-                const SizedBox(height: 6),
+              ),
+              const SizedBox(width: 10),
 
-                // Role text
-                Text(
-                  role,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w300,
-                  ),
-                ),
-                const SizedBox(height: 6),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      name,
+                      style: TextStyle(
+                        fontSize: constraints.maxWidth > 600 ? 20 : 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
 
-                // Bio text with overflow handling
-                Text(
-                  bio,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w300,
-                  ),
-                  softWrap: true,
-                  maxLines: 3, // Limit to 3 lines
-                  overflow: TextOverflow.ellipsis, // Add ellipsis for overflow
+                    Text(
+                      role,
+                      style: TextStyle(
+                        fontSize: constraints.maxWidth > 600 ? 16 : 14,
+                        fontWeight: FontWeight.w300,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+
+                    Text(
+                      bio,
+                      style: TextStyle(
+                        fontSize: constraints.maxWidth > 600 ? 14 : 12,
+                        fontWeight: FontWeight.w300,
+                      ),
+                      softWrap: true,
+                      maxLines: constraints.maxWidth > 600 ? 4 : 3, // Increase lines for wider screens
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

@@ -32,7 +32,6 @@ class _DrawerWrapperState extends State<DrawerWrapper> {
     'Orders',
     // 'Profile',
   ];
-
   void onClick(index, context, currIdx) {
     if (index == 0) {
       GoRouter.of(context).go('/');
@@ -51,6 +50,7 @@ class _DrawerWrapperState extends State<DrawerWrapper> {
   Widget build(BuildContext context) {
     var homeCurrIdx = 0;
     final String path = widget.routerState.fullPath ?? '/';
+     bool hideBottomNav = path.contains('/profile') || path.contains('/orders/') || path.contains('/orderdetail');
     final firstRoute = path.split('/')[1];
 
     switch (firstRoute) {
@@ -68,14 +68,15 @@ class _DrawerWrapperState extends State<DrawerWrapper> {
       //   break;
     }
 
+
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 0,
-        backgroundColor: Color.fromARGB(255, 18, 21, 114),
+        backgroundColor: const Color.fromARGB(255, 18, 21, 114),
       ),
       key: drawerKey,
       body: widget.child,
-      bottomNavigationBar: NavigationBar(
+      bottomNavigationBar:hideBottomNav ? null : NavigationBar(
         height: 70,
         indicatorShape: const CircleBorder(eccentricity: 1),
         labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
