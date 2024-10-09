@@ -35,6 +35,16 @@ class OrderDetailError extends OrderDetailState {
   List<Object> get props => [message];
 }
 
+final class OrderDetailStateAuthError extends OrderDetailState {
+  const OrderDetailStateAuthError();
+
+  @override
+  List<Object?> get props => [];
+}
+
+
+
+
 
 // import 'package:equatable/equatable.dart';
 // import 'package:genme_app/models/order_detail_model.dart';

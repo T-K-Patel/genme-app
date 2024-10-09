@@ -1,5 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:genme_app/state/orders/orders_bloc.dart';
+// import 'dart:io';
+// import 'package:http/http.dart' as http;
+// import 'package:path_provider/path_provider.dart';
 import 'order_detail_event.dart';
 import 'order_detail_state.dart';
 import 'order_detail_provider.dart';
@@ -7,33 +9,37 @@ import 'package:genme_app/models/order_detail_model.dart';
 
 class OrderDetailBloc extends Bloc<OrderDetailEvent, OrderDetailState> {
   final OrderDetailProvider provider;
-  final Map<String, OrderDetailModel> _cache = {};
+  // final Map<String, OrderDetailModel> _cache = {};
 
   OrderDetailBloc(this.provider) : super(OrderDetailInitial()) {
     on<FetchOrderDetail>((event, emit) async {
       final String id = event.id;
 
       // Check if data is in cache
-      if (_cache.containsKey(id)) {
-        emit(OrderDetailLoaded(_cache[id]!));
-      } else {
-        emit(OrderDetailLoading());
-        try {
-          final OrderDetailModel orderDetail = await provider.fetchOrderDetail(id);
-          // Cache the fetched data
-          _cache[id] = orderDetail;
-          emit(OrderDetailLoaded(orderDetail));
-        } catch (e) {
-          emit(const OrderDetailError('Failed to fetch order details'));
+      // if (_cache.containsKey(id)) {
+      //   emit(OrderDetailLoaded(_cache[id]!));
+      // } else {
+      emit(OrderDetailLoading());
+      try {
+        final OrderDetailModel orderDetail =
+            await provider.fetchOrderDetail(id);
+        // print("tryorderdetailssssss");
+        emit(OrderDetailLoaded(orderDetail));
+        // Cache the fetched data
+        // _cache[id] = orderDetail;
+        // emit(OrderDetailLoaded(orderDetail));
+      } catch (e) {
+        // print("orderdetailsbiggggerrororrsss$e");
+        if (e.toString() == "Exception: unauthorized") {
+          // print("tokennotvalidorderdetaisl");
+          emit(const OrderDetailStateAuthError());
+        } else {
+          emit(const OrderDetailError('Failed to fetch order details.'));
         }
       }
     });
-  }
 
-  @override
-  Future<void> close() {
-    _cache.clear();
-    return super.close();
+   
   }
 }
 

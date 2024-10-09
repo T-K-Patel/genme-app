@@ -62,15 +62,27 @@ GoRouter router = GoRouter(
               path: ":id",
               builder: (context, state) {
                 final id = state.pathParameters['id']!;
-                return BlocProvider(
-                  // Use the existing OrderDetailBloc provided by MyApp
-                  create: (context) => OrderDetailBloc(
-                    BlocProvider.of<OrderDetailBloc>(context).provider,
-                  )..add(FetchOrderDetail(id)),
-                  child: OrderDetailScreen(id: id),
-                );
+
+                // Access the already provided OrderDetailBloc instance and trigger the event
+                // context.read<OrderDetailBloc>().add(FetchOrderDetail(id));
+
+                return OrderDetailScreen(id: id);
               },
             ),
+
+            // GoRoute(
+            //   path: ":id",
+            //   builder: (context, state) {
+            //     final id = state.pathParameters['id']!;
+            //     return BlocProvider(
+            //       // Use the existing OrderDetailBloc provided by MyApp
+            //       create: (context) => OrderDetailBloc(
+            //         BlocProvider.of<OrderDetailBloc>(context).provider,
+            //       )..add(FetchOrderDetail(id)),
+            //       child: OrderDetailScreen(id: id),
+            //     );
+            //   },
+            // ),
           ],
         ),
         GoRoute(
@@ -94,14 +106,14 @@ GoRouter router = GoRouter(
       return routerState.redir;
     }
     AuthState authState = routerState.authState;
-    if(authState is AuthStateUninitialized){
-      if(state.fullPath!="/splash"){
+    if (authState is AuthStateUninitialized) {
+      if (state.fullPath != "/splash") {
         return "/splash";
       }
       return null;
     }
     if (authState is AuthStateInitial) {
-      if(state.fullPath=='/login/client'){
+      if (state.fullPath == '/login/client') {
         return null;
       }
       return '/login/client';
@@ -110,7 +122,7 @@ GoRouter router = GoRouter(
         (state.fullPath == '/login/client' || state.fullPath == '/splash')) {
       return '/';
     }
-    //
+    
     if (authState is AuthStateLoggedOut &&
         (state.fullPath != '/login/client' && state.fullPath != '/splash')) {
       return '/login/client';

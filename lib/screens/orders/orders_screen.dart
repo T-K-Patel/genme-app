@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:genme_app/screens/orders/widget/order_card.dart';
 import 'package:genme_app/state/orders/orders_bloc.dart';
 import 'package:genme_app/widget/custom_app_bar.dart';
+import 'package:intl/intl.dart';
 
 class OrdersScreen extends StatefulWidget {
   const OrdersScreen({super.key});
@@ -21,7 +22,6 @@ class _OrdersScreenState extends State<OrdersScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return SafeArea(
       child: Scaffold(
         body: Column(
@@ -29,44 +29,52 @@ class _OrdersScreenState extends State<OrdersScreen> {
             const CustomAppBar(title: "Orders"),
             const SizedBox(height: 10),
             Expanded(
-              child: BlocBuilder<OrdersBloc, OrdersState>(
-                builder: (context, state) {
-                  if (state is OrdersLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (state is OrdersLoaded) {
-                    return state.orders.isNotEmpty
-                        ? CustomScrollView(
-                            slivers: [
-                              const SliverToBoxAdapter(
-                                child: Padding(
-                                  padding: EdgeInsets.only(bottom: 10),
-                                ),
-                              ),
-                              SliverToBoxAdapter(
-                                child: Column(
-                                  children: state.orders
-                                      .map((order) => OrderCard(
-                                            id: order.id,
-                                            date: order.createdAt.toString(),
-                                            total: order.itemsCount.toString(),
-                                            status: order.status,
-                                          ))
-                                      .toList(),
-                                ),
-                              ),
-                              const SliverToBoxAdapter(
-                                child: Padding(
-                                  padding: EdgeInsets.only(top: 10),
-                                ),
-                              ),
-                            ],
-                          )
-                        : const Center(child: Text("No orders available."));
-                  } else if (state is OrdersError) {
-                    return Center(child: Text(state.message));
-                  }
-                  return const SizedBox.shrink();
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  // Trigger the refresh event to clear cache and refetch orders
+                  context.read<OrdersBloc>().add(OrderEventRefresh());
                 },
+                child: BlocBuilder<OrdersBloc, OrdersState>(
+                  builder: (context, state) {
+                    if (state is OrdersLoading) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (state is OrdersLoaded) {
+                      return state.orders.isNotEmpty
+                          ? CustomScrollView(
+                              slivers: [
+                                const SliverToBoxAdapter(
+                                  child: Padding(
+                                    padding: EdgeInsets.only(bottom: 10),
+                                  ),
+                                ),
+                                SliverToBoxAdapter(
+                                  child: Column(
+                                    children: state.orders
+                                        .map((order) => OrderCard(
+                                              id: order.id,
+                                              date: DateFormat('hh:mm a')
+                                                  .format(order.createdAt),
+                                              total:
+                                                  order.itemsCount.toString(),
+                                              status: order.status,
+                                            ))
+                                        .toList(),
+                                  ),
+                                ),
+                                const SliverToBoxAdapter(
+                                  child: Padding(
+                                    padding: EdgeInsets.only(top: 10),
+                                  ),
+                                ),
+                              ],
+                            )
+                          : const Center(child: Text("No orders available."));
+                    } else if (state is OrdersError) {
+                      return Center(child: Text(state.message));
+                    }
+                    return const SizedBox.shrink();
+                  },
+                ),
               ),
             ),
             const SizedBox(height: 10),

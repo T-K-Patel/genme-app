@@ -16,6 +16,7 @@ class FetchOrderDetail extends OrderDetailEvent {
 }
 
 
+
 // import 'package:equatable/equatable.dart';
 
 // abstract class OrderDetailEvent extends Equatable {

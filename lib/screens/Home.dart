@@ -8,7 +8,7 @@ const infoData = [
         "to facilitate access to the quality healthcare to people."
   },
   {
-    "title": "Mission & Fission",
+    "title": "Mission & Vision",
     "description": "Our mission is to streamline the pharmaceutical supply chain, "
         "enabling businesses to deliver life-saving medicines to those "
         "who need them most. Our vision is to free pharma companies to "

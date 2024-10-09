@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:genme_app/models/order.dart';
 import 'package:genme_app/state/auth/auth_bloc.dart';
 import 'package:genme_app/state/orders/orders_provider.dart';
+import 'package:go_router/go_router.dart';
 
 part 'orders_event.dart';
 part 'orders_state.dart';
@@ -14,6 +15,13 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
 
   OrdersBloc(this._orderProvider) : super(OrdersInitial()) {
     on<OrderEventFetchData>(_onFetchOrders);
+     on<OrderEventRefresh>(_onRefreshOrders); 
+    
+  }
+
+   // Method to clear the cache
+  void clearCache() {
+    _cachedOrders = null;
   }
 
   Future<void> _onFetchOrders(
@@ -30,7 +38,7 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
     try {
       // Fetch orders using OrderProvider
       final orders = await _orderProvider.getAllOrders();
-
+      print('ooorrrrderss  $orders');
       // Cache the orders after fetching
       _cachedOrders = orders;
 
@@ -40,6 +48,7 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
         emit(OrdersError(e.toString()));
       } else if (e.toString() == "Exception: Exception: unauthorized") {
         print("object222222");
+        // GoRouter.of(context).go("/splash");
         emit(OrderStateAuthError());
       } else {
         emit(OrdersError(e.toString()));
@@ -47,5 +56,10 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
 
       // Handle general errors
     }
+  }
+    Future<void> _onRefreshOrders(
+      OrderEventRefresh event, Emitter<OrdersState> emit) async {
+    clearCache(); // Clear cache when refreshing
+    add(OrderEventFetchData()); // Re-fetch orders
   }
 }

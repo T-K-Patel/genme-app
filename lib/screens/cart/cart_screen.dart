@@ -4,6 +4,7 @@ import 'package:genme_app/screens/cart/widget/cart_item.dart';
 import 'package:genme_app/screens/cart/widget/no_items_in_cart.dart';
 import 'package:genme_app/services/notification_service.dart';
 import 'package:genme_app/widget/custom_app_bar.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -112,6 +113,11 @@ class CartScreenState extends State<CartScreen> {
           backgroundColor: Colors.green,
           textStyle: const TextStyle(color: Colors.white),
         );
+      } else if (response.statusCode == 401 || response.statusCode == 403) {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.remove('access_token');
+        // GoRouter.of(context).go("/splash");
+        throw Exception("Failed to place order. Error: ${response.body}");
       } else {
         throw Exception("Failed to place order. Error: ${response.body}");
       }
@@ -181,7 +187,8 @@ class CartScreenState extends State<CartScreen> {
               ),
             ),
           Padding(
-            padding:  EdgeInsets.symmetric(horizontal: deviceWidth * 0.1, vertical: deviceHeight * 0.01),
+            padding: EdgeInsets.symmetric(
+                horizontal: deviceWidth * 0.1, vertical: deviceHeight * 0.01),
             child: ElevatedButton(
               onPressed: isLoading || itemsList.isEmpty ? null : _placeOrder,
               style: ElevatedButton.styleFrom(

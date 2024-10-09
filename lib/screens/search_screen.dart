@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import 'package:genme_app/services/notification_service.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -41,6 +40,7 @@ class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _quantityController = TextEditingController();
   final TextEditingController medicineController = TextEditingController();
   final FocusNode medicineFocusNode = FocusNode();
+  final FocusNode quantityFocusNode = FocusNode();
   // bool enable = true;
 
   // Function to store medicine and quantity in shared preferences
@@ -61,42 +61,51 @@ class _SearchScreenState extends State<SearchScreen> {
     // Check if the item is already in the cart
     bool itemExists = cart.any((item) {
       Map<String, dynamic> decodedItem = json.decode(item);
-      return decodedItem['medicine']['id'] == medicine.id;
+      return decodedItem['medicine']?['id'] == medicine.id;
     });
 
     if (itemExists) {
-    // Show a snackbar if the item is already in the cart
-    NotificationService.showSnackBar(
-      'Item already in cart',
-      duration: const Duration(seconds: 2),
-      backgroundColor: Colors.orange,
-      textStyle: const TextStyle(color: Colors.white),
-    );
-  } else {
-    // Add the new cart item to the existing cart
-    cart.add(json.encode(cartItem));
+      // Show a snackbar if the item is already in the cart
+      NotificationService.showSnackBar(
+        'Item already in cart',
+        duration: const Duration(seconds: 2),
+        backgroundColor: Colors.orange,
+        textStyle: const TextStyle(color: Colors.white),
+      );
+    } else {
+      medicineController.text = "";
+      _quantityController.text = "";
+      // Add the new cart item to the existing cart
+      cart.add(json.encode(cartItem));
 
-    // Save the updated cart
-    await prefs.setStringList('cart', cart);
-
-    // Show a snackbar for successful addition
-    NotificationService.showSnackBar(
-      'Item added to cart',
-      duration: const Duration(seconds: 2),
-      backgroundColor: Colors.green,
-      textStyle: const TextStyle(color: Colors.white),
-    );
+      // Save the updated cart
+      await prefs.setStringList('cart', cart).then((success) {
+        if (success) {
+          NotificationService.showSnackBar(
+            'Item added to cart',
+            duration: const Duration(seconds: 2),
+            backgroundColor: Colors.green,
+            textStyle: const TextStyle(color: Colors.white),
+          );
+        } else {
+          NotificationService.showSnackBar(
+            'Failed to add item to cart',
+            duration: const Duration(seconds: 2),
+            backgroundColor: Colors.red,
+            textStyle: const TextStyle(color: Colors.white),
+          );
+        }
+      });
+    }
   }
-    
-    
-    
-    
-    
-    // Add the new cart item to the existing cart
-    // cart.add(json.encode(cartItem));
 
-    // // Save the updated cart
-    // await prefs.setStringList('cart', cart);
+  @override
+  void dispose() {
+    _quantityController.dispose();
+    medicineController.dispose();
+    medicineFocusNode.dispose();
+    quantityFocusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -145,6 +154,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         controller: medicineController,
                         debounceDuration: const Duration(milliseconds: 300),
                         suggestionsCallback: (search) async {
+                          if (search.length < 3) return null;
                           search = search.toLowerCase();
                           SharedPreferences prefs =
                               await SharedPreferences.getInstance();
@@ -163,8 +173,12 @@ class _SearchScreenState extends State<SearchScreen> {
                                 .map((jsonItem) => Medicine.fromJson(jsonItem))
                                 .toList();
                             return suggestions;
+                          } else if (response.statusCode == 401 ||
+                              response.statusCode == 403) {
+                            // prefs.remove("access_token");
+                            return [];
                           }
-                          return null;
+                          return [];
                         },
                         builder: (context, medicineController, focusNode) {
                           return TextField(
@@ -200,6 +214,8 @@ class _SearchScreenState extends State<SearchScreen> {
                               tappedMedicine = medicine.name;
                               id = medicine.id;
                               type = medicine.type;
+                              medicineFocusNode.unfocus();
+                              quantityFocusNode.requestFocus();
                             },
                             title: Text(medicine.name),
                           );
@@ -224,6 +240,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       SizedBox(height: deviceHeight * 0.015),
                       // Quantity Input Field
                       TextField(
+                        focusNode: quantityFocusNode,
                         controller: _quantityController,
                         decoration: InputDecoration(
                           hintText: "Enter quantity...",
@@ -252,18 +269,13 @@ class _SearchScreenState extends State<SearchScreen> {
                           onPressed: () {
                             if (tappedMedicine != "Enter the Name..." &&
                                 _quantityController.text.isNotEmpty) {
-                              // Add selected medicine and quantity to the cart
+                              FocusScope.of(context).unfocus();
                               Medicine selectedMedicine = Medicine(
                                   name: tappedMedicine, id: id, type: type);
+                              // Add selected medicine and quantity to the cart
 
                               _addToCart(
                                   selectedMedicine, _quantityController.text);
-                              // NotificationService.showSnackBar(
-                              //   'Medicine added to cart!',
-                              //   duration: const Duration(seconds: 2),
-                              //   backgroundColor: Colors.black,
-                              //   textStyle: const TextStyle(color: Colors.white),
-                              // );
                             }
                           },
                           style: ElevatedButton.styleFrom(

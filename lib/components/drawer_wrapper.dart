@@ -7,7 +7,8 @@ import 'package:genme_app/widget/nav_items.dart'; // Import flutter_svg package
 void Function()? goBackToDash;
 
 class DrawerWrapper extends StatefulWidget {
-  const DrawerWrapper({super.key, required this.child, required this.routerState});
+  const DrawerWrapper(
+      {super.key, required this.child, required this.routerState});
 
   final Widget child;
   final GoRouterState routerState;
@@ -41,8 +42,8 @@ class _DrawerWrapperState extends State<DrawerWrapper> {
       GoRouter.of(context).go('/cart');
     } else if (index == 3) {
       GoRouter.of(context).go('/orders');
-    // } else if (index == 4) {
-    //   GoRouter.of(context).go('/profile');
+      // } else if (index == 4) {
+      //   GoRouter.of(context).go('/profile');
     }
   }
 
@@ -50,7 +51,9 @@ class _DrawerWrapperState extends State<DrawerWrapper> {
   Widget build(BuildContext context) {
     var homeCurrIdx = 0;
     final String path = widget.routerState.fullPath ?? '/';
-     bool hideBottomNav = path.contains('/profile') || path.contains('/orders/') || path.contains('/orderdetail');
+    bool hideBottomNav = path.contains('/profile') ||
+        path.contains('/orders/') ||
+        path.contains('/orderdetail');
     final firstRoute = path.split('/')[1];
 
     switch (firstRoute) {
@@ -68,7 +71,6 @@ class _DrawerWrapperState extends State<DrawerWrapper> {
       //   break;
     }
 
-
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 0,
@@ -76,27 +78,29 @@ class _DrawerWrapperState extends State<DrawerWrapper> {
       ),
       key: drawerKey,
       body: widget.child,
-      bottomNavigationBar:hideBottomNav ? null : NavigationBar(
-        height: 70,
-        indicatorShape: const CircleBorder(eccentricity: 1),
-        labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
-        backgroundColor: Colors.white,
-        indicatorColor: Colors.transparent,
-        selectedIndex: homeCurrIdx,
-        destinations: navItems.asMap().entries.map(
-          (entry) {
-            return NavigationDestination(
-              icon: NavItem(
-                label: entry.value,
-                selected: entry.key == homeCurrIdx,
-                onTap: () => onClick(entry.key, context, homeCurrIdx),
-              ),
-              label: entry.value,
-              tooltip: '',
-            );
-          },
-        ).toList(),
-      ),
+      bottomNavigationBar: hideBottomNav
+          ? null
+          : NavigationBar(
+              height: 70,
+              indicatorShape: const CircleBorder(eccentricity: 1),
+              labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+              backgroundColor: Colors.white,
+              indicatorColor: Colors.transparent,
+              selectedIndex: homeCurrIdx,
+              destinations: navItems.asMap().entries.map(
+                (entry) {
+                  return NavigationDestination(
+                    icon: NavItem(
+                      label: entry.value,
+                      selected: entry.key == homeCurrIdx,
+                      onTap: () => onClick(entry.key, context, homeCurrIdx),
+                    ),
+                    label: entry.value,
+                    tooltip: '',
+                  );
+                },
+              ).toList(),
+            ),
     );
   }
 }

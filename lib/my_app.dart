@@ -4,14 +4,17 @@ import 'package:genme_app/routes/router.dart';
 import 'package:genme_app/services/notification_service.dart';
 import 'package:genme_app/state/auth/auth_bloc.dart';
 import 'package:genme_app/state/auth/auth_provider.dart';
+import 'package:genme_app/state/invoice/invoice_bloc.dart';
+import 'package:genme_app/state/invoice/invoice_provider.dart';
 import 'package:genme_app/state/orderdetail/order_detail_bloc.dart';
 import 'package:genme_app/state/orderdetail/order_detail_provider.dart';
+import 'package:genme_app/state/orderdetail/order_detail_state.dart';
 import 'package:genme_app/state/orders/orders_bloc.dart';
 import 'package:genme_app/state/orders/orders_provider.dart';
 import 'package:genme_app/state/profile/profile_bloc.dart';
 import 'package:genme_app/state/profile/profile_provider.dart';
-import 'package:genme_app/state/search/search_bloc.dart';
-import 'package:http/http.dart' as http;
+// import 'package:genme_app/state/search/search_bloc.dart';
+// import 'package:http/http.dart' as http;
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -22,9 +25,9 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   // final OrderDetailProvider _orderDetailProvider = OrderDetailProvider();
-  final http.Client httpClient = http.Client();
+  // final http.Client httpClient = http.Client();
   @override
-  Widget build(BuildContext appcontext) {
+  Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
@@ -33,10 +36,9 @@ class _MyAppState extends State<MyApp> {
               AuthBloc(AuthProvider())..add(const AuthEventCheck()),
         ),
         BlocProvider(
-          lazy: false,
-          create: (context) => ProfileBloc(ProfileProvider())
-            ..add(const ProfileEventInitialize()),
-        ),
+            lazy: false, create: (context) => ProfileBloc(ProfileProvider())
+            // ..add(const ProfileEventInitialize()),
+            ),
         BlocProvider(
           lazy: false,
           create: (context) =>
@@ -45,6 +47,10 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(
           lazy: false,
           create: (context) => OrderDetailBloc(OrderDetailProvider()),
+        ),
+        BlocProvider(
+          lazy: false,
+          create: (context) => InvoiceBloc(InvoiceProvider()),
         ),
         //  BlocProvider(
         //   lazy: false,
@@ -59,22 +65,30 @@ class _MyAppState extends State<MyApp> {
         routerConfig: router,
         builder: (context, child) {
           return BlocListener<AuthBloc, AuthState>(
-            listener: (context, state) => {routerState.changeAuthState(state)},
+            listener: (context, state) {
+              routerState.changeAuthState(state);
+            },
             child: BlocListener<ProfileBloc, ProfileState>(
-              listener: (context, state) => {
-                if (state is ProfileStateAuthError)
-                  {appcontext.read<AuthBloc>().add(const AuthEventLogout())}
+              listener: (context, state) {
+                if (state is ProfileStateAuthError) {
+                  context.read<AuthBloc>().add(const AuthEventLogout());
+                }
               },
               child: BlocListener<OrdersBloc, OrdersState>(
-                  listener: (context, state) => {
-                        if (state is OrderStateAuthError)
-                          {
-                            appcontext
-                                .read<AuthBloc>()
-                                .add(const AuthEventLogout())
-                          }
-                      },
-                  child: child
+                  listener: (context, state) {
+                    if (state is OrderStateAuthError) {
+                      print("orderstateautherror");
+                      context.read<AuthBloc>().add(const AuthEventLogout());
+                    }
+                  },
+                  child: BlocListener<OrderDetailBloc, OrderDetailState>(
+                    listener: (context, state) {
+                      if (state is OrderDetailStateAuthError) {
+                        context.read<AuthBloc>().add(const AuthEventLogout());
+                      }
+                    },
+                    child: child,
+                  )
                   // BlocListener<SearchBloc, SearchState>(
                   //   listener: (context, state) => {
                   //     if (state is ProfileStateAuthError)

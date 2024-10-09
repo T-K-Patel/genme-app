@@ -44,6 +44,7 @@ dependencies:
   equatable: ^2.0.0
   shared_preferences: ^2.3.2
   intl: ^0.19.0
+  path_provider: ^2.1.4
 
 dev_dependencies:
   flutter_test:
@@ -63,7 +64,8 @@ dev_dependencies:
 flutter:
 
   assets:
-    - assets/genmetext.png
+    # - assets/genmetext.png
+    - assets/genmewithouttext.png
     - assets/images/projects/
     - assets/images/
     - assets/images/outlets_and_atms_images/

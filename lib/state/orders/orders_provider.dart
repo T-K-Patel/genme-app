@@ -78,7 +78,7 @@ class OrderProvider {
     // return orders;
 
     try {
-      await Future.delayed(const Duration(seconds: 3));
+      // await Future.delayed(const Duration(seconds: 3));
       final prefs = await SharedPreferences.getInstance();
       String? accessToken = prefs.getString('access_token');
       final url = Uri.parse('$_baseUrl/api/order/client/getAllOrders/');
@@ -93,12 +93,16 @@ class OrderProvider {
         // print(jsonData);
         final List<Order> orders =
             jsonData.map((orderJson) => Order.fromJson(orderJson)).toList();
-            // print('oooooooo  $orders');
+        // print('oooooooo  $orders');
         return orders;
-      }else if (response.statusCode == 401 || response.statusCode == 403) {
+      } else if (response.statusCode == 401 || response.statusCode == 403) {
+        print("orders_unauthorized");
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.remove("access_token");
         throw Exception("unauthorized");
       } else {
-        throw Exception('Failed to fetch orders. Status code: ${response.statusCode}');
+        throw Exception(
+            'Failed to fetch orders. Status code: ${response.statusCode}');
       }
     } catch (e) {
       throw Exception(e);

@@ -32,22 +32,26 @@ class OrderDetailProvider {
         'Authorization': 'Bearer $accessToken',
         'Content-Type': 'application/json',
       });
-          print(response.statusCode);
-          // print(response.body);
+          // print('responsefromorderdetailprovider${response.statusCode}');
+          // print('fjvdsvhjfvjhdvfjdsvf${response.body}');
       if (response.statusCode == 200) {
         final data = OrderDetailModel.fromJson(jsonDecode(response.body));
         // print("objectdbfkdbf ${data.invoice.id}");
+        // print('dataaaa    ${data.items[0].}');
         return data;
 
       } else if (response.statusCode == 401 || response.statusCode == 403) {
         throw Exception("unauthorized");
       } else {
+        // print("elseelseleseobject");
         throw Exception(
-            'Failed to fetch orders. Status code: ${response.statusCode}');
+            'Failed to fetch order details.');
       }
     } catch (e) {
       // print(e);
-      throw Exception('auth_error');
+      // print("catch order details $e");
+      // rethrow;
+      throw Exception(e);
     }
   }
 

@@ -1,17 +1,15 @@
-// lib/models/order_item_model.dart
-
-
-
 class OrderItem {
   final String id;
   final String product;
-  final int quantity;
+  final int? quantity;
   final String? batchNumber;
   final String? company;
   final String? expiryDate;
   final double? mrp;
   final double? price;
   final String? hsn;
+  final double? sgst;
+  final double? cgst;
   final bool? supplied;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -20,13 +18,15 @@ class OrderItem {
   OrderItem({
     required this.id,
     required this.product,
-    required this.quantity,
+    this.quantity,
     this.batchNumber,
     this.company,
     this.expiryDate,
     this.mrp,
     this.price,
     this.hsn,
+    this.sgst,
+    this.cgst,
     this.supplied,
     required this.createdAt,
     required this.updatedAt,
@@ -42,8 +42,16 @@ class OrderItem {
       company: json['company'],
       expiryDate: json['expiry_date'],
       mrp: json['mrp'] != null ? double.tryParse(json['mrp'].toString()) : null,
-      price: json['price'] != null ? double.tryParse(json['price'].toString()) : null,
+      price: json['price'] != null
+          ? double.tryParse(json['price'].toString())
+          : null,
       hsn: json['hsn'],
+      sgst: json['sgst'] != null
+          ? double.tryParse(json['sgst'].toString())
+          : null,
+      cgst: json['cgst'] != null
+          ? double.tryParse(json['cgst'].toString())
+          : null,
       supplied: json['supplied'],
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
@@ -52,34 +60,33 @@ class OrderItem {
   }
 }
 
-
 class OrderDetailModel {
-  final String id;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final String? id;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
   final List<OrderItem> items;
-  final String status;
-  final double total;
-  final double deliveryCharge;
-  final double discount;
+  final String? status;
+  final double? total;
+  final double? deliveryCharge;
+  final double? discount;
   final DateTime? deliveryDate;
   final Client client;
-  final Distributer distributer;
+  final Distributer? distributer;
   final Invoice? invoice;
 
   OrderDetailModel({
-    required this.id,
-    required this.createdAt,
-    required this.updatedAt,
+    this.id,
+    this.createdAt,
+    this.updatedAt,
     required this.items,
-    required this.status,
-    required this.total,
-    required this.deliveryCharge,
-    required this.discount,
+    this.status,
+    this.total,
+    this.deliveryCharge,
+    this.discount,
     this.deliveryDate,
     required this.client,
     required this.distributer,
-    required this.invoice,
+    this.invoice,
   });
 
   factory OrderDetailModel.fromJson(Map<String, dynamic> json) {
@@ -114,29 +121,33 @@ class OrderDetailModel {
           ? DateTime.tryParse(json['delivery_date'])
           : null,
       client: Client.fromJson(json['client']),
-      distributer: Distributer.fromJson(json['distributer']),
-      invoice: Invoice.fromJson(json['invoice']),
-      // invoice: null,
+      distributer: json['distributer'] != null
+          ? Distributer.fromJson(json['distributer'])
+          : null, // Handle nullable distributer
+      invoice: json['invoice'] != null
+          ? Invoice.fromJson(json['invoice'])
+          : null, // Handle nullable invoice
     );
   }
 }
 
-
-
 class Invoice {
-  final String id;
-  final String invoiceDate;
-  final String url;
+  final String? id;
+  final String? invoiceNumber;
+  final String? invoiceDate;
+  final String? url;
 
   Invoice({
-    required this.id,
-    required this.invoiceDate,
-    required this.url,
+    this.id,
+    this.invoiceNumber,
+    this.invoiceDate,
+    this.url,
   });
 
   factory Invoice.fromJson(Map<String, dynamic> json) {
     return Invoice(
       id: json['id'],
+      invoiceNumber: json['invoice_number'],
       invoiceDate: json['invoice_date'],
       url: json['url'],
     );
@@ -144,24 +155,24 @@ class Invoice {
 }
 
 class Client {
-  final String id;
-  final String username;
-  final String role;
-  final String legalName;
-  final String panNumber;
-  final String gstin;
-  final String dlNo;
-  final String address;
+  final String? id;
+  final String? username;
+  final String? role;
+  final String? legalName;
+  final String? panNumber;
+  final String? gstin;
+  final String? dlNo;
+  final String? address;
 
   Client({
-    required this.id,
-    required this.username,
-    required this.role,
-    required this.legalName,
-    required this.panNumber,
-    required this.gstin,
-    required this.dlNo,
-    required this.address,
+    this.id,
+    this.username,
+    this.role,
+    this.legalName,
+    this.panNumber,
+    this.gstin,
+    this.dlNo,
+    this.address,
   });
 
   factory Client.fromJson(Map<String, dynamic> json) {
@@ -179,22 +190,22 @@ class Client {
 }
 
 class Distributer {
-  final String user;
-  final String role;
-  final String legalName;
-  final String panNumber;
-  final String gstin;
-  final String dlNo;
-  final String address;
+  final String? user;
+  final String? role;
+  final String? legalName;
+  final String? panNumber;
+  final String? gstin;
+  final String? dlNo;
+  final String? address;
 
   Distributer({
-    required this.user,
-    required this.role,
-    required this.legalName,
-    required this.panNumber,
-    required this.gstin,
-    required this.dlNo,
-    required this.address,
+    this.user,
+    this.role,
+    this.legalName,
+    this.panNumber,
+    this.gstin,
+    this.dlNo,
+    this.address,
   });
 
   factory Distributer.fromJson(Map<String, dynamic> json) {
@@ -209,53 +220,3 @@ class Distributer {
     );
   }
 }
-
-
-// // lib/models/order_detail_model.dart
-
-// class OrderDetailModel {
-//   final String id;
-//   final String date;
-//   final String total;
-//   final String status;
-
-//   OrderDetailModel({
-//     required this.id,
-//     required this.date,
-//     required this.total,
-//     required this.status,
-//   });
-
-//   factory OrderDetailModel.fromJson(Map<String, dynamic> json) {
-//     return OrderDetailModel(
-//       id: json['id'],
-//       date: json['date'],
-//       total: json['total'],
-//       status: json['status'],
-//     );
-//   }
-// }
-
-
-// class OrderDetailModel {
-//   final String id;
-//   final String date;
-//   final String total;
-//   final String status;
-
-//   OrderDetailModel({
-//     required this.id,
-//     required this.date,
-//     required this.total,
-//     required this.status,
-//   });
-
-//   factory OrderDetailModel.fromJson(Map<String, dynamic> json) {
-//     return OrderDetailModel(
-//       id: json['id'],
-//       date: json['date'],
-//       total: json['total'],
-//       status: json['status'],
-//     );
-//   }
-// }

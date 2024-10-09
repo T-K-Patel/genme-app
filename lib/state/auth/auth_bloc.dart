@@ -19,7 +19,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthEventCheck>((event, emit) async {
       // TODO: implement event handler
       print("AUTH LISTENED\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
-      emit(const AuthStateUninitialized());
+      // emit(const AuthStateUninitialized());
       try {
         final prefs = await SharedPreferences.getInstance();
         String? accessToken = prefs.getString('access_token');
@@ -33,8 +33,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             'Authorization': 'Bearer $accessToken',
             'Content-Type': 'application/json',
           });
-          print('AUTH RESPONSE\n.\n,\nk\n/\n ${response.statusCode}');
-          print('AUTH RESPONSE\n.\n,\nk\n/\n ${response.body}');
+          print('AUTH RESPONSE\n.\n,\\n/\n ${response.statusCode}');
+          print('AUTH RESPONSE\n.\n,\nk\n/\n ${response.body}iuygiugiu');
+          // print('AUTH again${response.body}iuygiugiu');
           if (response.statusCode == 200) {
             emit(AuthStateLoggedIn(
                 user: UserProfile.fromJson(jsonDecode(response.body))));
@@ -47,6 +48,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             // await prefs.remove('refresh_token');
             emit(const AuthStateLoggedOut());
           }
+          print("qwertyyyyyy");
         } else {
           print('AUTH TOKEN REMOVED DUE TO SOME ERROR');
           await prefs.remove('access_token');
@@ -56,13 +58,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       } on Exception catch (e) {
         print("AUTH ERROR FRO TRY BLOCK\n,\n.\nm\n,\n.\n.$e");
         emit(AuthStateError(exception: e));
-      } catch (e){
+      } catch (e) {
         print('UNKNOWN ERROR OCCURED');
         emit(const AuthStateInitial());
       }
     });
-
-
 
     on<AuthEventLogin>((state, emit) async {
       emit(const AuthStateLoading());
@@ -94,19 +94,22 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             emit(AuthStateLoggedIn(
                 user: UserProfile.fromJson(jsonDecode(profileResp.body))));
           } else {
-           
             emit(AuthStateError(exception: Exception("Login Failed")));
           }
         } else {
-         
           // print('dff ${response.toString()}');
           emit(AuthStateError(exception: Exception("Login Error")));
         }
 // print('df ${response.toString()}');
       } on Exception catch (e) {
-       
         emit(AuthStateError(exception: e));
       }
+    });
+    on<AuthEventLogout>((state, emit) async {
+      print("autheventlogouttttttttttt");
+      final prefs = await SharedPreferences.getInstance();
+      prefs.remove('access_token');
+      emit(const AuthStateLoggedOut());
     });
   }
   //  Future<void> _refreshToken(
