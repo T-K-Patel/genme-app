@@ -1,7 +1,4 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:genme_app/state/auth/auth_bloc.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -15,14 +12,10 @@ class SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    // context.read<AuthBloc>().add(const AuthEventCheck());
   }
 
   @override
   Widget build(BuildContext context) {
-    if (kDebugMode) {
-      print("SPLASH SCREEN BUILT WITH NO DOUBT\n,\n.\nk\nm\ny\ng\nf\nf");
-    }
     // Screen with gradient background and genme text in center
     return SafeArea(
       child: Scaffold(

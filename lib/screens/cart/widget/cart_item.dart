@@ -1,4 +1,4 @@
-import 'dart:convert';
+// import 'dart:convert';
 import 'package:flutter/material.dart';
 
 class CartItem extends StatefulWidget {
@@ -8,12 +8,12 @@ class CartItem extends StatefulWidget {
   final Function(int) onQuantityChanged; // Callback to update quantity
 
   const CartItem({
-    Key? key,
+    super.key,
     required this.name,
     required this.quantity,
     required this.id,
-    required this.onQuantityChanged, // Add callback parameter
-  }) : super(key: key);
+    required this.onQuantityChanged,
+  });
 
   @override
   State<CartItem> createState() => _CartItemState();
@@ -41,11 +41,14 @@ class _CartItemState extends State<CartItem> {
   @override
   Widget build(BuildContext context) {
     final double deviceWidth = MediaQuery.of(context).size.width;
-    // final double deviceHeight = MediaQuery.of(context).size.height;
+
+    var orientation = MediaQuery.of(context).orientation;
+    bool isPortrait = orientation == Orientation.portrait;
     return Container(
       margin: EdgeInsets.symmetric(
           horizontal: deviceWidth * 0.04, vertical: deviceWidth * 0.02),
-      padding: const EdgeInsets.all(8),
+      padding: EdgeInsets.fromLTRB(deviceWidth * 0.02, deviceWidth * 0.02,
+          deviceWidth * 0.0, deviceWidth * 0.02),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
@@ -57,6 +60,7 @@ class _CartItemState extends State<CartItem> {
         ],
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
             child: Column(
@@ -73,31 +77,49 @@ class _CartItemState extends State<CartItem> {
               ],
             ),
           ),
-          Row(
+          Stack(
             children: [
-              IconButton(
-                onPressed: () {
-                  _updateQuantity(-1);
-                },
-                icon: const Icon(Icons.remove),
-                disabledColor: Colors.grey,
-                tooltip: 'Remove',
-              ),
-              Text(
-                quantity.toString(),
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+              Padding(
+                padding: EdgeInsets.fromLTRB(0, 0, deviceWidth * 0.068, 0),
+                child: Row(
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        _updateQuantity(-1);
+                      },
+                      icon: const Icon(Icons.remove),
+                      disabledColor: Colors.grey,
+                      tooltip: 'Remove',
+                    ),
+                    Text(
+                      quantity.toString(),
+                      style: TextStyle(
+                        fontSize: deviceWidth * 0.04,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        _updateQuantity(1);
+                      },
+                      icon: const Icon(Icons.add),
+                      color: Colors.green,
+                      tooltip: 'Add',
+                    ),
+                  ],
                 ),
               ),
-              IconButton(
-                onPressed: () {
-                  _updateQuantity(1);
-                },
-                icon: const Icon(Icons.add),
-                color: Colors.green,
-                tooltip: 'Add',
-              ),
+              Positioned(
+                right: isPortrait ? -1 * deviceWidth * 0.02 : -1 * deviceWidth * 0.006 ,
+                child: IconButton(
+                  onPressed: () {
+                    _updateQuantity(-quantity);
+                  },
+                  icon: const Icon(Icons.delete),
+                  color: Colors.red,
+                  tooltip: 'Delete',
+                ),
+              )
             ],
           ),
         ],

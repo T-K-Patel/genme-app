@@ -4,8 +4,6 @@ import 'package:genme_app/routes/router.dart';
 import 'package:genme_app/services/notification_service.dart';
 import 'package:genme_app/state/auth/auth_bloc.dart';
 import 'package:genme_app/state/auth/auth_provider.dart';
-import 'package:genme_app/state/invoice/invoice_bloc.dart';
-import 'package:genme_app/state/invoice/invoice_provider.dart';
 import 'package:genme_app/state/orderdetail/order_detail_bloc.dart';
 import 'package:genme_app/state/orderdetail/order_detail_provider.dart';
 import 'package:genme_app/state/orderdetail/order_detail_state.dart';
@@ -13,8 +11,6 @@ import 'package:genme_app/state/orders/orders_bloc.dart';
 import 'package:genme_app/state/orders/orders_provider.dart';
 import 'package:genme_app/state/profile/profile_bloc.dart';
 import 'package:genme_app/state/profile/profile_provider.dart';
-// import 'package:genme_app/state/search/search_bloc.dart';
-// import 'package:http/http.dart' as http;
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -24,8 +20,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  // final OrderDetailProvider _orderDetailProvider = OrderDetailProvider();
-  // final http.Client httpClient = http.Client();
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -48,18 +42,9 @@ class _MyAppState extends State<MyApp> {
           lazy: false,
           create: (context) => OrderDetailBloc(OrderDetailProvider()),
         ),
-        BlocProvider(
-          lazy: false,
-          create: (context) => InvoiceBloc(InvoiceProvider()),
-        ),
-        //  BlocProvider(
-        //   lazy: false,
-        //   create: (context) => SearchBloc(httpClient: httpClient), // Add SearchBloc here
-        // ),
       ],
       child: MaterialApp.router(
         scaffoldMessengerKey: NotificationService.messengerKey,
-        // theme: ThemeData(fontFamily: 'SF_Pro_Display', useMaterial3: false),
         title: 'Genme',
         debugShowCheckedModeBanner: false,
         routerConfig: router,
@@ -77,7 +62,6 @@ class _MyAppState extends State<MyApp> {
               child: BlocListener<OrdersBloc, OrdersState>(
                   listener: (context, state) {
                     if (state is OrderStateAuthError) {
-                      print("orderstateautherror");
                       context.read<AuthBloc>().add(const AuthEventLogout());
                     }
                   },
@@ -88,25 +72,11 @@ class _MyAppState extends State<MyApp> {
                       }
                     },
                     child: child,
-                  )
-                  // BlocListener<SearchBloc, SearchState>(
-                  //   listener: (context, state) => {
-                  //     if (state is ProfileStateAuthError)
-                  //       {appcontext.read<AuthBloc>().add(const AuthEventLogout())}
-                  //   },
-                  //   child: child,
-                  // ),
-                  ),
+                  )),
             ),
           );
         },
       ),
     );
   }
-
-  // @override
-  // void dispose() {
-  //   _orderDetailProvider.clearCache();
-  //   super.dispose();
-  // }
 }

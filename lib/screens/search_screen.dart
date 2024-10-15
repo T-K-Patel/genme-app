@@ -41,7 +41,6 @@ class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController medicineController = TextEditingController();
   final FocusNode medicineFocusNode = FocusNode();
   final FocusNode quantityFocusNode = FocusNode();
-  // bool enable = true;
 
   // Function to store medicine and quantity in shared preferences
   Future<void> _addToCart(Medicine medicine, String quantity) async {

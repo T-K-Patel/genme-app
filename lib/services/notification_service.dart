@@ -1,5 +1,3 @@
-// lib/services/notification_service.dart
-
 import 'package:flutter/material.dart';
 
 final _messengerKey = GlobalKey<ScaffoldMessengerState>();

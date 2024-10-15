@@ -70,6 +70,11 @@ class _DrawerWrapperState extends State<DrawerWrapper> {
       //   homeCurrIdx = 4;
       //   break;
     }
+    double screenWidth = MediaQuery.of(context).size.width;
+    // double screen = MediaQuery.of(context).size.height;
+    var orientation = MediaQuery.of(context).orientation;
+
+    bool isPortrait = orientation == Orientation.portrait;
 
     return Scaffold(
       appBar: AppBar(
@@ -81,7 +86,7 @@ class _DrawerWrapperState extends State<DrawerWrapper> {
       bottomNavigationBar: hideBottomNav
           ? null
           : NavigationBar(
-              height: 70,
+              height: isPortrait ?  screenWidth * 0.18 : screenWidth * 0.07,
               indicatorShape: const CircleBorder(eccentricity: 1),
               labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
               backgroundColor: Colors.white,

@@ -20,4 +20,3 @@ class Utility {
   }
 }
 
-const baseUrl = "https://genme-app-backend.vercel.app" ;

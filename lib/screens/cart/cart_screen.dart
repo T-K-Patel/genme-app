@@ -4,7 +4,6 @@ import 'package:genme_app/screens/cart/widget/cart_item.dart';
 import 'package:genme_app/screens/cart/widget/no_items_in_cart.dart';
 import 'package:genme_app/services/notification_service.dart';
 import 'package:genme_app/widget/custom_app_bar.dart';
-import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -47,26 +46,17 @@ class CartScreenState extends State<CartScreen> {
   }
 
   Future<void> _updateCartItemQuantity(int index, int newQuantity) async {
-    // Update the quantity of the item in the list
-    itemsList[index]['quantity'] = newQuantity.toString();
+    setState(() {
+      if (newQuantity == 0) {
+        itemsList.removeAt(index);
+      } else {
+        itemsList[index]['quantity'] = newQuantity.toString();
+      }
+    });
 
-    if (newQuantity == 0) {
-      itemsList.removeWhere((item) => item['quantity'] == "0");
-      List<Map<String, dynamic>> updatedCart = [...itemsList];
-      updatedCart.removeWhere((item) => item['quantity'] == 0);
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      List<String> newCart =
-          updatedCart.map((item) => json.encode(item)).toList();
-      await prefs.setStringList('cart', newCart);
-      setState(() {});
-      return;
-    }
-
-    // Save updated itemsList back to SharedPreferences
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> updatedCart =
         itemsList.map((item) => json.encode(item)).toList();
-
     await prefs.setStringList('cart', updatedCart);
   }
 
@@ -116,10 +106,9 @@ class CartScreenState extends State<CartScreen> {
       } else if (response.statusCode == 401 || response.statusCode == 403) {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.remove('access_token');
-        // GoRouter.of(context).go("/splash");
-        throw Exception("Failed to place order. Error: ${response.body}");
+        throw Exception("Failed to place order. Go to orders.");
       } else {
-        throw Exception("Failed to place order. Error: ${response.body}");
+        throw Exception("Failed to place order.");
       }
     } catch (error) {
       if (mounted) {
@@ -162,6 +151,7 @@ class CartScreenState extends State<CartScreen> {
                                   int index = entry.key;
                                   Map<String, dynamic> item = entry.value;
                                   return CartItem(
+                                    key: ValueKey(item['medicine']['id']),
                                     name: item['medicine']['name'].toString(),
                                     quantity: item['quantity'].toString(),
                                     id: item['medicine']['id'].toString(),
@@ -188,7 +178,7 @@ class CartScreenState extends State<CartScreen> {
             ),
           Padding(
             padding: EdgeInsets.symmetric(
-                horizontal: deviceWidth * 0.1, vertical: deviceHeight * 0.01),
+                horizontal: deviceWidth * 0.04, vertical: deviceHeight * 0.01),
             child: ElevatedButton(
               onPressed: isLoading || itemsList.isEmpty ? null : _placeOrder,
               style: ElevatedButton.styleFrom(

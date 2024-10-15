@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:genme_app/components/drawer_wrapper.dart';
@@ -12,8 +11,6 @@ import 'package:genme_app/screens/profile/profile_screen.dart';
 import 'package:genme_app/screens/search_screen.dart';
 import 'package:genme_app/screens/splash_screen.dart';
 import 'package:genme_app/state/auth/auth_bloc.dart';
-import 'package:genme_app/state/orderdetail/order_detail_bloc.dart';
-import 'package:genme_app/state/orderdetail/order_detail_event.dart';
 import 'package:genme_app/state/orders/orders_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -63,26 +60,9 @@ GoRouter router = GoRouter(
               builder: (context, state) {
                 final id = state.pathParameters['id']!;
 
-                // Access the already provided OrderDetailBloc instance and trigger the event
-                // context.read<OrderDetailBloc>().add(FetchOrderDetail(id));
-
                 return OrderDetailScreen(id: id);
               },
             ),
-
-            // GoRoute(
-            //   path: ":id",
-            //   builder: (context, state) {
-            //     final id = state.pathParameters['id']!;
-            //     return BlocProvider(
-            //       // Use the existing OrderDetailBloc provided by MyApp
-            //       create: (context) => OrderDetailBloc(
-            //         BlocProvider.of<OrderDetailBloc>(context).provider,
-            //       )..add(FetchOrderDetail(id)),
-            //       child: OrderDetailScreen(id: id),
-            //     );
-            //   },
-            // ),
           ],
         ),
         GoRoute(
@@ -122,7 +102,7 @@ GoRouter router = GoRouter(
         (state.fullPath == '/login/client' || state.fullPath == '/splash')) {
       return '/';
     }
-    
+
     if (authState is AuthStateLoggedOut &&
         (state.fullPath != '/login/client' && state.fullPath != '/splash')) {
       return '/login/client';

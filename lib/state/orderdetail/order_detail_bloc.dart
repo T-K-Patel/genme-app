@@ -9,28 +9,21 @@ import 'package:genme_app/models/order_detail_model.dart';
 
 class OrderDetailBloc extends Bloc<OrderDetailEvent, OrderDetailState> {
   final OrderDetailProvider provider;
-  // final Map<String, OrderDetailModel> _cache = {};
 
   OrderDetailBloc(this.provider) : super(OrderDetailInitial()) {
     on<FetchOrderDetail>((event, emit) async {
       final String id = event.id;
 
-      // Check if data is in cache
-      // if (_cache.containsKey(id)) {
-      //   emit(OrderDetailLoaded(_cache[id]!));
-      // } else {
+      
       emit(OrderDetailLoading());
       try {
         final OrderDetailModel orderDetail =
             await provider.fetchOrderDetail(id);
         // print("tryorderdetailssssss");
         emit(OrderDetailLoaded(orderDetail));
-        // Cache the fetched data
-        // _cache[id] = orderDetail;
-        // emit(OrderDetailLoaded(orderDetail));
       } catch (e) {
         // print("orderdetailsbiggggerrororrsss$e");
-        if (e.toString() == "Exception: unauthorized") {
+        if (e.toString() == "Exception: Exception: unauthorized") {
           // print("tokennotvalidorderdetaisl");
           emit(const OrderDetailStateAuthError());
         } else {

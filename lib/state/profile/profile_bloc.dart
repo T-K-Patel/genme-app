@@ -14,7 +14,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         final UserProfile userData = await profileProvider.getUserData();
         emit(ProfileStateDataFetched(userProfile: userData));
       } on Exception catch (e) {
-        print('profileblocprovider$e');
+        // print('profileblocprovider$e');
         emit(ProfileStateError(exception: e));
       }
     });

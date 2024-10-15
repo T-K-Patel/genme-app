@@ -9,11 +9,6 @@ class GenmeAppBar extends StatelessWidget {
       leadingWidth: 65,
       titleSpacing: 15,
       toolbarHeight: 75,
-      // leading: const Icon(
-      //   Icons.account_circle,
-      //   size: 50,
-      //   color: Colors.white,
-      // ),
       leading: const Padding(
         padding: EdgeInsets.only(left: 10),
         child: CircleAvatar(

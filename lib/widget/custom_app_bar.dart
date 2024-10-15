@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:genme_app/state/auth/auth_bloc.dart';
@@ -17,14 +16,25 @@ class CustomAppBar extends StatefulWidget {
 class CustomAppBarState extends State<CustomAppBar> {
   @override
   Widget build(BuildContext context) {
+    // Get screen width and height for responsiveness
+    double screenWidth = MediaQuery.of(context).size.width;
+    var orientation = MediaQuery.of(context).orientation;
+
+    bool isPortrait = orientation == Orientation.portrait;
     return Container(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 20),
-      decoration: const BoxDecoration(
-        color: Color.fromARGB(255, 18, 21, 114),
+      padding: isPortrait
+          ? EdgeInsets.fromLTRB(screenWidth * 0.038, screenWidth * 0.036,
+              screenWidth * 0.038, screenWidth * 0.03)
+          : EdgeInsets.fromLTRB(screenWidth * 0.02, screenWidth * 0.02,
+              screenWidth * 0.02, screenWidth * 0.02),
+      decoration: BoxDecoration(
+        color: const Color.fromARGB(255, 18, 21, 114),
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(30),
-          bottomRight: Radius.circular(30),
+          bottomLeft: Radius.circular(
+              isPortrait ? screenWidth * 0.08 : screenWidth * 0.04),
+          bottomRight: Radius.circular(
+              isPortrait ? screenWidth * 0.08 : screenWidth * 0.04),
         ),
       ),
       child: Column(
@@ -36,24 +46,22 @@ class CustomAppBarState extends State<CustomAppBar> {
                   GoRouter.of(context).go('/profile');
                 },
                 child: CircleAvatar(
-                  radius: 20,
+                  radius: isPortrait ? screenWidth * 0.05 : screenWidth * 0.02,
                   backgroundColor: Colors.white,
                   child: Icon(
                     Icons.person, // Default human icon in Material Design
-                    size: 30,
+                    size: isPortrait ? screenWidth * 0.08 : screenWidth * 0.03,
                     color: Colors.grey[700], // Customize icon color
                   ),
-                  // backgroundImage: NetworkImage(
-                  //   "https://imgv3.fotor.com/images/slider-image/A-clear-image-of-a-woman-wearing-red-sharpened-by-Fotors-image-sharpener.jpg",
-                  //   scale: 1,
-                  // )
                 ),
               ),
-              const Padding(padding: EdgeInsets.only(left: 20)),
-              const Text(
+              SizedBox(
+                  width: isPortrait ? screenWidth * 0.045 : screenWidth * 0.01),
+              Text(
                 "genme",
                 style: TextStyle(
-                  fontSize: 34,
+                  fontSize:
+                      isPortrait ? screenWidth * 0.075 : screenWidth * 0.03,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                   fontStyle: FontStyle.italic,
@@ -61,36 +69,47 @@ class CustomAppBarState extends State<CustomAppBar> {
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          SizedBox(
+              height: isPortrait ? screenWidth * 0.02 : screenWidth * 0.005),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 "Hello",
                 style: TextStyle(
-                    fontSize: 30,
+                    fontSize:
+                        isPortrait ? screenWidth * 0.06 : screenWidth * 0.025,
                     fontWeight: FontWeight.bold,
                     color: Colors.white),
               ),
-              const Padding(padding: EdgeInsets.only(left: 10)),
+              SizedBox(width: screenWidth * 0.02),
               BlocBuilder<AuthBloc, AuthState>(
                 buildWhen: (previous, current) {
                   return current is AuthStateLoggedIn;
                 },
                 builder: (context, state) {
                   if (state is AuthStateLoggedIn) {
-                    return Text(
-                      '${state.user.legalName} !',
-                      style: const TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.normal,
-                          color: Colors.white),
+                    return Expanded(
+                      child: Text(
+                        '${state.user.legalName} !',
+                        style: TextStyle(
+                            fontSize: isPortrait
+                                ? screenWidth * 0.06
+                                : screenWidth * 0.025,
+                            fontWeight: FontWeight.normal,
+                            color: Colors.white),
+                        overflow:
+                            TextOverflow.ellipsis, // Add ellipsis for overflow
+                        maxLines: 1,
+                      ),
                     );
                   }
-                  return const Text(
+                  return Text(
                     " User !",
                     style: TextStyle(
-                        fontSize: 30,
+                        fontSize: isPortrait
+                            ? screenWidth * 0.06
+                            : screenWidth * 0.025,
                         fontWeight: FontWeight.normal,
                         color: Colors.white),
                   );
@@ -98,45 +117,50 @@ class CustomAppBarState extends State<CustomAppBar> {
               ),
             ],
           ),
-          const Padding(padding: EdgeInsets.only(top: 8)),
+          SizedBox(
+              height: isPortrait ? screenWidth * 0.02 : screenWidth * 0.005),
+
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text(
                 widget.title,
-                style: const TextStyle(
-                    fontSize: 16,
+                style: TextStyle(
+                    fontSize:
+                        isPortrait ? screenWidth * 0.04 : screenWidth * 0.025,
                     fontWeight: FontWeight.w300,
                     color: Colors.white),
               ),
             ],
           ),
-          if (widget.isHome == true)
-            const Padding(padding: EdgeInsets.only(top: 10)),
+          if (widget.isHome == true) SizedBox(height: isPortrait ?  screenWidth * 0.025 : screenWidth * 0.01),
           //   Search Input field
           if (widget.isHome == true)
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: EdgeInsets.symmetric(
+                  horizontal:
+                      isPortrait ? screenWidth * 0.04 : screenWidth * 0.02),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(15),
+                borderRadius: BorderRadius.circular(screenWidth * 0.04),
               ),
               child: TextField(
                 onTap: () {
                   GoRouter.of(context).go('/search');
                 },
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   alignLabelWithHint: true,
                   hintText: 'Search Medicine to Buy',
                   hintStyle: TextStyle(
                       color: Colors.grey,
                       fontStyle: FontStyle.italic,
-                      fontSize: 16),
+                      fontSize:
+                          isPortrait ? screenWidth * 0.04 : screenWidth * 0.02),
                   border: InputBorder.none,
                   icon: Icon(
                     Icons.search_sharp,
                     color: Colors.grey,
-                    size: 24,
+                    size: isPortrait ? screenWidth * 0.06 : screenWidth * 0.03,
                   ),
                 ),
               ),

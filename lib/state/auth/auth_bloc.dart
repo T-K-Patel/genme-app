@@ -1,10 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:genme_app/models/user_profile.dart';
-// import 'package:genme_app/services/notification_service.dart';
 import 'package:genme_app/state/auth/auth_provider.dart';
-// import 'package:meta/meta.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,48 +15,39 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc(AuthProvider authProvider) : super(const AuthStateUninitialized()) {
     on<AuthEventCheck>((event, emit) async {
       // TODO: implement event handler
-      print("AUTH LISTENED\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+      // print("AUTH LISTENED\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
       // emit(const AuthStateUninitialized());
       try {
         final prefs = await SharedPreferences.getInstance();
         String? accessToken = prefs.getString('access_token');
-        // String? refreshToken = prefs.getString('refresh_token');
-        print('AUTH_TOKEN FROM AUTH BLOCK\n\n\n\n\n\n\n\n $accessToken');
+        // print('AUTH_TOKEN FROM AUTH BLOCK\n\n\n\n\n\n\n\n $accessToken');
         if (accessToken != null && accessToken.isNotEmpty) {
-          print("ENTERED IF BLOCK IN AUTHBLOC");
+          // print("ENTERED IF BLOCK IN AUTHBLOC");
           final url = Uri.parse('$baseUrl/api/users/client/profile/');
 
           final response = await http.get(url, headers: {
             'Authorization': 'Bearer $accessToken',
             'Content-Type': 'application/json',
           });
-          print('AUTH RESPONSE\n.\n,\\n/\n ${response.statusCode}');
-          print('AUTH RESPONSE\n.\n,\nk\n/\n ${response.body}iuygiugiu');
-          // print('AUTH again${response.body}iuygiugiu');
+          // print('AUTH RESPONSE\n.\n,\\n/\n ${response.statusCode}');
+          // print('AUTH RESPONSE\n.\n,\nk\n/\n ${response.body}iuygiugiu');
           if (response.statusCode == 200) {
             emit(AuthStateLoggedIn(
                 user: UserProfile.fromJson(jsonDecode(response.body))));
-          } else if (response.statusCode == 401) {
+          } else if (response.statusCode == 401 || response.statusCode == 403) {
             await prefs.remove('access_token');
-            // await prefs.remove('refresh_token');
-            emit(const AuthStateLoggedOut());
-          } else if (response.statusCode == 403) {
-            await prefs.remove('access_token');
-            // await prefs.remove('refresh_token');
             emit(const AuthStateLoggedOut());
           }
-          print("qwertyyyyyy");
         } else {
-          print('AUTH TOKEN REMOVED DUE TO SOME ERROR');
+          // print('AUTH TOKEN REMOVED DUE TO SOME ERROR');
           await prefs.remove('access_token');
-          // await prefs.remove('refresh_token');
           emit(const AuthStateInitial());
         }
       } on Exception catch (e) {
-        print("AUTH ERROR FRO TRY BLOCK\n,\n.\nm\n,\n.\n.$e");
+        // print("AUTH ERROR FRO TRY BLOCK\n,\n.\nm\n,\n.\n.$e");
         emit(AuthStateError(exception: e));
       } catch (e) {
-        print('UNKNOWN ERROR OCCURED');
+        // print('UNKNOWN ERROR OCCURED');
         emit(const AuthStateInitial());
       }
     });
@@ -106,7 +94,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     });
     on<AuthEventLogout>((state, emit) async {
-      print("autheventlogouttttttttttt");
       final prefs = await SharedPreferences.getInstance();
       prefs.remove('access_token');
       emit(const AuthStateLoggedOut());
