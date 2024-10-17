@@ -3,40 +3,85 @@ import 'package:genme_app/widget/custom_app_bar.dart';
 
 const infoData = [
   {
-    "title": "We help Navigate Pharma",
-    "description": "We partner with pharmaceutical companies and healthcare providers"
-        "to facilitate access to the quality healthcare to people."
+    "title": "Introduction",
+    "description":
+        '''Revolutionizing healthcare supply with integrated credit, finance, and commerce solutions for seamless B2B transactions.'''
+    // "We partner with pharmaceutical companies and healthcare providers"
+    //     "to facilitate access to the quality healthcare to people."
   },
   {
-    "title": "Mission & Vision",
-    "description": "Our mission is to streamline the pharmaceutical supply chain, "
-        "enabling businesses to deliver life-saving medicines to those "
-        "who need them most. Our vision is to free pharma companies to "
-        "focus on innovation and patient care, while Of supply chain "
-        "management, ensuring timely and accurate delivery of medicines "
-        "to patients."
+    "title": "Credit Evaluation & Financing",
+    "description":
+        '''Empowering distributors, retailers, and hospitals with real-time credit assessments and digital credit lines to streamline procurement and mitigate risk.'''
   },
   {
-    "title": "Values",
-    "description": "Our mission is guided by five core values: collaboration, "
-        "innovation, integrity, empathy, and excellence. These values foster trust, "
-        "streamline processes, ensure transparency, prioritize patients and customers, "
-        "and drive continuous improvement. By living these values, we simplify the "
-        "pharmaceutical supply chain and make a meaningful impact on people's lives."
+    "title": "Supply Chain Automation",
+    "description":
+        '''Simplified inventory management and automated workflows that optimize operations for manufacturers, suppliers, and healthcare professionals.'''
+  },
+  {
+    "title": "Buy Now Pay Later (BNPL) Solutions",
+    "description":
+        '''Flexible financing options tailored for medical procurement, enabling businesses to purchase now and pay later with confidence.'''
+  },
+  {
+    "title": "B2B Marketplace",
+    "description":
+        '''A one-stop platform for healthcare procurement, connecting suppliers, hospitals, and pharmacies with transparent pricing and trusted partners.'''
+  },
+  {
+    "title": "Data-Driven Insights",
+    "description":
+        '''Harnessing AI and analytics to provide actionable insights into supply chain efficiency, market trends, and business growth opportunities.'''
+  },
+  {
+    "title": "End-to-End Integration",
+    "description":
+        '''Seamless integration across finance, commerce, and logistics, enhancing trust, reducing delays, and ensuring compliance in healthcare transactions.'''
   },
   {
     "title": "Our Team",
-    "description": "Our team includes students/graduates from BITS Pilani and the IITs, "
-        "along with industry veterans with over 20 years of combined experience and "
-        "significant startup and industry projects."
+    "description":
+        "Our team includes students/graduates from BITS Pilani and the IITs, "
+            "along with industry veterans with over 20 years of combined experience and "
+            "significant startup and industry projects."
   }
+  // {
+  //   "title": "We help Navigate Pharma",
+  //   "description": "We partner with pharmaceutical companies and healthcare providers"
+  //       "to facilitate access to the quality healthcare to people."
+  // },
+  // {
+  //   "title": "Mission & Vision",
+  //   "description": "Our mission is to streamline the pharmaceutical supply chain, "
+  //       "enabling businesses to deliver life-saving medicines to those "
+  //       "who need them most. Our vision is to free pharma companies to "
+  //       "focus on innovation and patient care, while Of supply chain "
+  //       "management, ensuring timely and accurate delivery of medicines "
+  //       "to patients."
+  // },
+  // {
+  //   "title": "Values",
+  //   "description": "Our mission is guided by five core values: collaboration, "
+  //       "innovation, integrity, empathy, and excellence. These values foster trust, "
+  //       "streamline processes, ensure transparency, prioritize patients and customers, "
+  //       "and drive continuous improvement. By living these values, we simplify the "
+  //       "pharmaceutical supply chain and make a meaningful impact on people's lives."
+  // },
+  // {
+  //   "title": "Our Team",
+  //   "description": "Our team includes students/graduates from BITS Pilani and the IITs, "
+  //       "along with industry veterans with over 20 years of combined experience and "
+  //       "significant startup and industry projects."
+  // }
 ];
 
 const teamData = [
   {
     "name": "Tirth Patel",
     "role": "Software Engineer",
-    "imageUrl": "https://portfolio-tkpatel.vercel.app/assets/AboutMeImage-aPbed6c7.jpg",
+    "imageUrl":
+        "https://portfolio-tkpatel.vercel.app/assets/AboutMeImage-aPbed6c7.jpg",
     "bio": "I am a software engineer with a passion for building products that "
         "make a difference in people's lives."
   },
@@ -81,9 +126,9 @@ class HomeScreen extends StatelessWidget {
                     child: Column(
                       children: infoData
                           .map((data) => InfoCard(
-                        title: data['title']!,
-                        description: data['description']!,
-                      ))
+                                title: data['title']!,
+                                description: data['description']!,
+                              ))
                           .toList(),
                     ),
                   ),
@@ -91,11 +136,11 @@ class HomeScreen extends StatelessWidget {
                     child: Column(
                       children: teamData
                           .map((data) => MemberCard(
-                        name: data['name']!,
-                        role: data['role']!,
-                        imageUrl: data['imageUrl']!,
-                        bio: data['bio']!,
-                      ))
+                                name: data['name']!,
+                                role: data['role']!,
+                                imageUrl: data['imageUrl']!,
+                                bio: data['bio']!,
+                              ))
                           .toList(),
                     ),
                   ),
@@ -128,7 +173,9 @@ class InfoCard extends StatelessWidget {
         return Container(
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           padding: const EdgeInsets.all(12),
-          width: constraints.maxWidth > 600 ? 600 : screenWidth * 0.9, // Limiting max width
+          width: constraints.maxWidth > 600
+              ? 600
+              : screenWidth * 0.9, // Limiting max width
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(15),
@@ -140,7 +187,9 @@ class InfoCard extends StatelessWidget {
               Text(
                 title,
                 style: TextStyle(
-                  fontSize: constraints.maxWidth > 600 ? 24 : 18, // Adjust font size based on width
+                  fontSize: constraints.maxWidth > 600
+                      ? 24
+                      : 18, // Adjust font size based on width
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -159,8 +208,6 @@ class InfoCard extends StatelessWidget {
     );
   }
 }
-
-
 
 class MemberCard extends StatelessWidget {
   final String name;
@@ -185,7 +232,9 @@ class MemberCard extends StatelessWidget {
         return Container(
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           padding: const EdgeInsets.all(12),
-          width: constraints.maxWidth > 600 ? 600 : screenWidth * 0.9, // Max width limit
+          width: constraints.maxWidth > 600
+              ? 600
+              : screenWidth * 0.9, // Max width limit
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(15),
@@ -204,7 +253,6 @@ class MemberCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 10),
-
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -217,7 +265,6 @@ class MemberCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 6),
-
                     Text(
                       role,
                       style: TextStyle(
@@ -226,7 +273,6 @@ class MemberCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 6),
-
                     Text(
                       bio,
                       style: TextStyle(
@@ -234,7 +280,9 @@ class MemberCard extends StatelessWidget {
                         fontWeight: FontWeight.w300,
                       ),
                       softWrap: true,
-                      maxLines: constraints.maxWidth > 600 ? 4 : 3, // Increase lines for wider screens
+                      maxLines: constraints.maxWidth > 600
+                          ? 4
+                          : 3, // Increase lines for wider screens
                       overflow: TextOverflow.ellipsis,
                     ),
                   ],

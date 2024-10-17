@@ -4,12 +4,14 @@ import 'package:go_router/go_router.dart';
 class OrderCard extends StatelessWidget {
   final String id;
   final String date;
+  final String time;
   final String total;
   final String status;
   const OrderCard({
     super.key,
     required this.id,
     required this.date,
+    required this.time,
     required this.total,
     required this.status,
   });
@@ -76,13 +78,26 @@ class OrderCard extends StatelessWidget {
                   ),
                 ),
                 Flexible(
-                  child: Text(
-                    date,
-                    style: TextStyle(
-                      fontSize: dateFontSize,
-                      color: Colors.grey,
-                    ),
-                    textAlign: TextAlign.end,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        date,
+                        style: TextStyle(
+                          fontSize: dateFontSize,
+                          color: Colors.grey,
+                        ),
+                        textAlign: TextAlign.end,
+                      ),
+                      Text(
+                        time,
+                        style: TextStyle(
+                          fontSize: dateFontSize,
+                          color: Colors.grey,
+                        ),
+                        textAlign: TextAlign.end,
+                      ),
+                    ],
                   ),
                 ),
               ],

@@ -52,7 +52,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                     children: state.orders
                                         .map((order) => OrderCard(
                                               id: order.id,
-                                              date: DateFormat('hh:mm a')
+                                              date: DateFormat("dd MMM yyyy")
+                                                  .format(order.createdAt),
+                                              time: DateFormat('hh:mm a')
                                                   .format(order.createdAt),
                                               total:
                                                   order.itemsCount.toString(),

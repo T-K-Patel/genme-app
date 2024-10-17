@@ -308,11 +308,11 @@ class OrderDetailScreen extends StatelessWidget {
                                 ),
                               ),
                               onPressed: () async {
-                                final Uri _url =
+                                final Uri url =
                                     Uri.parse(order.invoice!.url ?? "");
-                                if (!await launchUrl(_url,
+                                if (!await launchUrl(url,
                                     mode: LaunchMode.externalApplication)) {
-                                  throw Exception('Could not launch $_url');
+                                  throw Exception('Could not launch $url');
                                 }
                               },
                               child: Row(
