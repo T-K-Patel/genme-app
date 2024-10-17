@@ -110,16 +110,52 @@ class _CartItemState extends State<CartItem> {
                 ),
               ),
               Positioned(
-                right: isPortrait ? -1 * deviceWidth * 0.02 : -1 * deviceWidth * 0.006 ,
-                child: IconButton(
-                  onPressed: () {
-                    _updateQuantity(-quantity);
-                  },
-                  icon: const Icon(Icons.delete),
-                  color: Colors.red,
-                  tooltip: 'Delete',
-                ),
-              )
+                  right: isPortrait
+                      ? -1 * deviceWidth * 0.02
+                      : -1 * deviceWidth * 0.006,
+                  child: IconButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text("Delete Item"),
+                            content: const Text(
+                                "Are you sure you want to delete this item?"),
+                            actions: [
+                              TextButton(
+                                child: const Text("Cancel"),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              TextButton(
+                                child: const Text("Delete"),
+                                onPressed: () {
+                                  _updateQuantity(
+                                      -quantity); // Call delete on confirmation
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                    icon: const Icon(Icons.delete),
+                    color: Colors.red,
+                    tooltip: 'Delete',
+                  )
+
+                  // IconButton(
+                  //   onPressed: () {
+                  //     _updateQuantity(-quantity);
+                  //   },
+                  //   icon: const Icon(Icons.delete),
+                  //   color: Colors.red,
+                  //   tooltip: 'Delete',
+                  // ),
+                  )
             ],
           ),
         ],

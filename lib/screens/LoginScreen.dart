@@ -26,7 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
-        // double screenWidth = MediaQuery.of(context).size.width;
+    // double screenWidth = MediaQuery.of(context).size.width;
     var orientation = MediaQuery.of(context).orientation;
 
     bool isPortrait = orientation == Orientation.portrait;
@@ -155,27 +155,37 @@ class _LoginScreenState extends State<LoginScreen> {
                                   onPressed: isLoading
                                       ? null // Disable the button while loading
                                       : () {
-                                          context.read<AuthBloc>().add(
-                                                AuthEventLogin(
-                                                  username: usernameController
-                                                      .text
-                                                      .trim(),
-                                                  password: passwordController
-                                                      .text
-                                                      .trim(),
-                                                ),
-                                              );
+                                          String username =
+                                              usernameController.text.trim();
+                                          String password =
+                                              passwordController.text.trim();
+
+                                          if (username.isEmpty ||
+                                              password.isEmpty) {
+                                            NotificationService.showSnackBar(
+                                              "Username and password cannot be empty",
+                                              duration:
+                                                  const Duration(seconds: 2),
+                                              backgroundColor: Colors.red,
+                                              textStyle: const TextStyle(
+                                                  color: Colors.white),
+                                            );
+                                          } else {
+                                            context.read<AuthBloc>().add(
+                                                  AuthEventLogin(
+                                                      username: username,
+                                                      password: password),
+                                                );
+                                          }
                                         },
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       if (isLoading)
-                                        const Center(
-                                          child: CircularProgressIndicator(
-                                            valueColor:
-                                                AlwaysStoppedAnimation<Color>(
-                                                    Colors.white),
-                                          ),
+                                        const CircularProgressIndicator(
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                                  Colors.white),
                                         )
                                       else
                                         const Text(
@@ -239,13 +249,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     color: Colors.black,
                     width: screenWidth *
                         2.25, // Large width to ensure the circle overflows horizontally
-                    height: isPortrait ? screenHeight * 1.08 : screenHeight * 1.1, // Adjust height to control the overall shape
+                    height: isPortrait
+                        ? screenHeight * 1.08
+                        : screenHeight *
+                            1.1, // Adjust height to control the overall shape
                     child: Padding(
                       padding: EdgeInsets.symmetric(
                         vertical: screenHeight * 0.05,
                         horizontal: screenWidth * 0.55,
                       ), // Adjust padding to place content lower
-                      child: const Column(
+                      child: Column(
                         mainAxisAlignment: MainAxisAlignment
                             .end, // Align content at the bottom
                         children: [
@@ -253,18 +266,18 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: Text(
                               'Sign In',
                               style: TextStyle(
-                                fontSize: 36,
+                                fontSize: screenWidth * 0.06,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.blue,
                               ),
                             ),
                           ),
-                          SizedBox(height: 20),
+                          SizedBox(height: screenHeight * 0.01),
                           Center(
                             child: Text(
                               'Log in to access your personalized Medinest experience',
                               style: TextStyle(
-                                fontSize: 18,
+                                fontSize: screenWidth * 0.035,
                                 color: Colors.white,
                               ),
                               textAlign: TextAlign.center,

@@ -1,18 +1,13 @@
 import 'package:flutter/material.dart';
 
-class NoItemsInCart extends StatefulWidget {
+class NoItemsInCart extends StatelessWidget {
   const NoItemsInCart({super.key});
 
   @override
-  State<NoItemsInCart> createState() => _NoItemsInCartState();
-}
-
-class _NoItemsInCartState extends State<NoItemsInCart> {
-  @override
   Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.center,
-      child: const Column(
+    return const Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SizedBox(height: 20),
           Text(
@@ -22,7 +17,7 @@ class _NoItemsInCartState extends State<NoItemsInCart> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 20),
+          SizedBox(height: 15),
           Text(
             'Add items to your cart to see them here',
             style: TextStyle(

@@ -14,6 +14,16 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile Page'),
+        // actions: [
+        //   // Logout button in the AppBar
+        //   IconButton(
+        //     icon: const Icon(Icons.logout),
+        //     onPressed: () {
+        //       // Dispatch logout event
+        //       context.read<AuthBloc>().add(const AuthEventLogout());
+        //     },
+        //   ),
+        // ],
       ),
       body: Padding(
         padding: EdgeInsets.all(screenWidth * 0.03),
@@ -56,8 +66,8 @@ class ProfileScreen extends StatelessWidget {
                               Text(
                                 user.legalName, // Use user data
                                 style: TextStyle(
-                                  fontSize:
-                                      screenWidth * 0.045, // Responsive font size
+                                  fontSize: screenWidth *
+                                      0.045, // Responsive font size
                                   fontWeight: FontWeight.bold,
                                 ),
                                 maxLines: 2, // Allow a maximum of 2 lines
@@ -68,8 +78,8 @@ class ProfileScreen extends StatelessWidget {
                               Text(
                                 '@${user.role}', // Display username
                                 style: TextStyle(
-                                  fontSize:
-                                      screenWidth * 0.04, // Responsive font size
+                                  fontSize: screenWidth *
+                                      0.04, // Responsive font size
                                   color: Colors.grey,
                                 ),
                               ),
@@ -95,6 +105,34 @@ class ProfileScreen extends StatelessWidget {
                         context, 'PAN', user.panNumber ?? 'Not available'),
                     buildProfileDetail(
                         context, 'Address', user.address ?? 'Not available'),
+
+                    SizedBox(height: screenHeight * 0.03),
+                    Center(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          // Dispatch logout event
+                          context.read<AuthBloc>().add(const AuthEventLogout());
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: screenWidth * 0.2,
+                              vertical: screenHeight * 0.02),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        child: const Text('Logout'),
+                      ),
+                    ),
+                    // Center(
+                    //   child: ElevatedButton(
+                    //     onPressed: () {
+                    //       // Dispatch logout event
+                    //       context.read<AuthBloc>().add(const AuthEventLogout());
+                    //     },
+                    //     child: const Text('Logout'),
+                    //   ),
+                    // ),
                   ],
                 );
               } else if (state is AuthStateLoading) {
@@ -102,8 +140,8 @@ class ProfileScreen extends StatelessWidget {
               } else if (state is AuthStateLoggedOut) {
                 return const Center(child: Text('Please log in.'));
               } else if (state is AuthStateError) {
-                return Center(
-                    child: Text('Error: ${state.exception.toString()}'));
+                return const Center(
+                    child: Text('An error occurred. Please try again later.'));
               }
               return const Center(child: Text('Unknown state.'));
             },

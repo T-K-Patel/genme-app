@@ -30,19 +30,23 @@ class CartScreenState extends State<CartScreen> {
       isLoading = true;
     });
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String>? cart = prefs.getStringList('cart');
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      List<String>? cart = prefs.getStringList('cart');
 
-    if (cart != null) {
-      itemsList = cart
-          .map((item) => json.decode(item))
-          .toList()
-          .cast<Map<String, dynamic>>();
+      if (cart != null) {
+        itemsList = cart
+            .map((item) => json.decode(item))
+            .toList()
+            .cast<Map<String, dynamic>>();
+      }
+    } catch (e) {
+      errorMessage = 'Failed to load cart items.';
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
-
-    setState(() {
-      isLoading = false;
-    });
   }
 
   Future<void> _updateCartItemQuantity(int index, int newQuantity) async {
@@ -71,9 +75,14 @@ class CartScreenState extends State<CartScreen> {
       String? token = prefs.getString('access_token');
 
       if (token == null) {
-        throw Exception("No access token found");
+        setState(() {
+          errorMessage = "No access token found. Login Again.";
+        });
+        return;
+        // throw Exception("No access token found. Login Again.");
       }
 
+      // Prepare the order items
       List<Map<String, dynamic>> orderItems = itemsList.map((item) {
         return {
           "product_id": item['medicine']['id'],
@@ -81,6 +90,7 @@ class CartScreenState extends State<CartScreen> {
         };
       }).toList();
 
+      // Send POST request to place the order
       var response = await http.post(
         Uri.parse(
             'https://genme-app-backend.vercel.app/api/order/client/create/'),
@@ -106,7 +116,7 @@ class CartScreenState extends State<CartScreen> {
       } else if (response.statusCode == 401 || response.statusCode == 403) {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.remove('access_token');
-        throw Exception("Failed to place order. Go to orders.");
+        throw Exception("Failed to place order. Login Again.");
       } else {
         throw Exception("Failed to place order.");
       }

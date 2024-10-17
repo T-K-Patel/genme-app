@@ -99,6 +99,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(const AuthStateLoggedOut());
     });
   }
+}
   //  Future<void> _refreshToken(
   //     SharedPreferences prefs, Emitter<AuthState> emit, String refreshToken) async {
   //   final refreshUrl = Uri.parse('$baseUrl/api/user/token/refresh/');
@@ -134,4 +135,3 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   //   await prefs.remove('refresh_token');
   //   emit(const AuthStateLoggedOut());
   // }
-}
