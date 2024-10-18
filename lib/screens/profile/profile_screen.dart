@@ -14,16 +14,16 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile Page'),
-        // actions: [
-        //   // Logout button in the AppBar
-        //   IconButton(
-        //     icon: const Icon(Icons.logout),
-        //     onPressed: () {
-        //       // Dispatch logout event
-        //       context.read<AuthBloc>().add(const AuthEventLogout());
-        //     },
-        //   ),
-        // ],
+        actions: [
+          // Logout button in the AppBar
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () {
+              // Dispatch logout event
+              context.read<AuthBloc>().add(const AuthEventLogout());
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: EdgeInsets.all(screenWidth * 0.03),

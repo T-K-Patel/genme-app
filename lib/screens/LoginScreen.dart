@@ -255,7 +255,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             1.1, // Adjust height to control the overall shape
                     child: Padding(
                       padding: EdgeInsets.symmetric(
-                        vertical: screenHeight * 0.05,
+                        vertical: screenHeight * 0.065,
                         horizontal: screenWidth * 0.55,
                       ), // Adjust padding to place content lower
                       child: Column(
@@ -266,21 +266,24 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: Text(
                               'Sign In',
                               style: TextStyle(
-                                fontSize: screenWidth * 0.06,
+                                fontSize: screenWidth * 0.1,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.blue,
                               ),
                             ),
                           ),
                           SizedBox(height: screenHeight * 0.01),
-                          Center(
-                            child: Text(
-                              'Log in to access your personalized Medinest experience',
-                              style: TextStyle(
-                                fontSize: screenWidth * 0.035,
-                                color: Colors.white,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Center(
+                              child: Text(
+                                'Log in to access your personalized Medinest experience',
+                                style: TextStyle(
+                                  fontSize: screenWidth * 0.045,
+                                  color: Colors.white,
+                                ),
+                                textAlign: TextAlign.center,
                               ),
-                              textAlign: TextAlign.center,
                             ),
                           ),
                         ],
